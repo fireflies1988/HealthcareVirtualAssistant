@@ -6,6 +6,7 @@ import os
 import random
 from gtts import gTTS
 import pyttsx3
+from sensor import *
 
 recognizer = sr.Recognizer()
 
@@ -30,7 +31,7 @@ def record_audio(ask=False):
 
 def respond(voice_data):
     if "what is your name" in voice_data:
-        speak("My name is Zira")
+        speak("My name is Alexa")
     elif "what time is it" in voice_data:
         speak(ctime())
     elif "search" in voice_data:
@@ -44,11 +45,10 @@ def respond(voice_data):
         webbrowser.get().open(url)
         speak("Here is the location of " + location)
     elif "heart rate" in voice_data:
-        speak("Please put your finger on the sensor and hold on a moment.")
-        # Do something...
-
-    else:
-        speak("Sorry, I'm not able to help with this one.")
+        speak("Place your index finger on the sensor with steady pressure.")
+        measure()
+    elif "exit" in voice_data:
+        exit()
 
 
 def speak(audio_string):
@@ -71,5 +71,4 @@ def speak(audio_string):
 
 
 def introduce():
-    playsound.playsound('sound/cortana_sound_effect.mp3')
     speak("Hi, I'm your healthcare virtual assistant. What can I do for you?")

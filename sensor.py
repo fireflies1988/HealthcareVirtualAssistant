@@ -9,10 +9,12 @@ ann = pyttsx3.init()  # Khởi tạo dịch vụ pyttsx3
 voices = ann.getProperty('voices')  # Sử dụng gói giọng nói trong pyttsx3
 ann.setProperty('voice', voices[1].id)  # Sử dụng giọng nữ cho gói giọng nói này
 
-
 # Parameters:
 # port: tên cổng nối với arduino
 # baudrate: tốc độ baud ví dụ như 9600 hoạch 11520
+
+arduino_data = serial.Serial('COM3', 115200)  # Khởi tạo cổng mà kết nối tới Adruino
+
 
 def read_sensor():  # đọc dữ liệu từ cảm biến
     string_data = ""
@@ -102,19 +104,19 @@ def measure():
         if 'No finger' in data_from_sensor:
             raw_data.clear()
             timeout = None
-            print('Please put your finger on the sensor')
+            # print('Please put your finger on the sensor')
 
         elif data_from_sensor.__len__() == 0:
             continue
         else:
             if timeout is None:
-                timeout = time.time() + 15
+                timeout = time.time() + 10
 
             if time.time() > timeout:
                 flag = False
             else:
                 raw_data.append(data_from_sensor)
-                print(data_from_sensor)
+                # print(data_from_sensor)
 
     data = raw_data[raw_data.__len__() - 1]
     array = data.split(",")
@@ -122,6 +124,4 @@ def measure():
 
 
 if __name__ == "__main__":  # chỉ chạy các chức năng có trong file sensor và không chạy trong các file khác
-    arduino_data = serial.Serial('COM3', 115200)  # Khởi tạo cổng mà kết nối tới Adruino
-
     measure()
