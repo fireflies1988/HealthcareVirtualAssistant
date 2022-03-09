@@ -1,14 +1,45 @@
 from tkinter import *
+from virtual_assistant import *
+import threading
+
+command = ""
 
 
-def on_click_speak_button():
+#
+# threading
+#
+def change_speak_button_status():
+    speakButton.config(image=voiceWaveIcon)
+
+
+def listen():
     global isListening
-    if isListening:
-        speakButton.config(image=blueMicIcon)
+    global command
+    try:
+        command = record_audio()
         isListening = not isListening
-    else:
-        speakButton.config(image=redMicIcon)
+        speakButton.config(image=blueEdgeMicIcon)
+        respond(command)
+    except sr.UnknownValueError:
         isListening = not isListening
+        speakButton.config(image=blueEdgeMicIcon)
+        speak("Sorry, I did not get that.")
+    except sr.RequestError:
+        isListening = not isListening
+        speakButton.config(image=blueEdgeMicIcon)
+        speak("Sorry, my speech service is down.")
+
+
+#
+# UI EVENT HANDLERS
+#
+def on_click_speak_button():
+    global command
+    global isListening
+    if not isListening:
+        isListening = not isListening
+        threading.Thread(target=change_speak_button_status).start()
+        threading.Thread(target=listen).start()
 
 
 def on_enter_speak_button(event):
@@ -45,13 +76,16 @@ def on_click_three_dots_button(event):
     threeDotsMenu.tk_popup(event.x_root, event.y_root)
 
 
+#
+# UI Design
+#
 window = Tk()
 window.bind_all("<Button-1>", lambda event: event.widget.focus_set())
 
 isListening = False
 blueEdgeMicIcon = PhotoImage(file="icon/blue-edge-mic.png")
 blueMicIcon = PhotoImage(file="icon/blue-mic.png")
-redMicIcon = PhotoImage(file="icon/voice-wave.png")
+voiceWaveIcon = PhotoImage(file="icon/voice-wave.png")
 
 window.geometry("390x640")
 window.title("Healthcare Virtual Assistant")
@@ -66,6 +100,7 @@ speakButton.place(relx=0.5, rely=1.0, y=-50, anchor=S)
 speakButton.bind("<Enter>", on_enter_speak_button)
 speakButton.bind("<Leave>", on_leave_speak_button)
 
+# Textfield "Ask me"
 askEntry = Entry(window,
                  width=35,
                  bg="#F0F0F0",
