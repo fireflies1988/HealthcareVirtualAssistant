@@ -15,7 +15,6 @@ def record_audio(ask=False):
     with sr.Microphone() as source:
         if ask:
             speak(ask)
-        recognizer.energy_threshold = 1000  # increase voice volume of speaker
         recognizer.adjust_for_ambient_noise(source, duration=1)
         audio = recognizer.listen(source)
         try:
@@ -31,7 +30,7 @@ def record_audio(ask=False):
 
 def respond(voice_data):
     if "what is your name" in voice_data:
-        speak("My name is Alexa")
+        speak("My name is Zira")
     elif "what time is it" in voice_data:
         speak(ctime())
     elif "search" in voice_data:
@@ -47,8 +46,9 @@ def respond(voice_data):
     elif "heart rate" in voice_data:
         speak("Place your index finger on the sensor with steady pressure.")
         measure()
-    elif "exit" in voice_data:
-        exit()
+
+    else:
+        speak("Sorry, I'm not able to help with this one.")
 
 
 def speak(audio_string):
@@ -71,4 +71,5 @@ def speak(audio_string):
 
 
 def introduce():
+    playsound.playsound('sound/cortana_sound_effect.mp3')
     speak("Hi, I'm your healthcare virtual assistant. What can I do for you?")
