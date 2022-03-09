@@ -53,9 +53,9 @@ def speak(audio_string):
     os.remove(audio_file)
 
 
-r = sr.Recognizer()
-window.mainloop()
-
+if __name__ == "__main__":
+    r = sr.Recognizer()
+    window.mainloop()
 
 # speak("Hi, say something...")
 # while 1:
