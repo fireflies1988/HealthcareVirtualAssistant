@@ -6,6 +6,7 @@ import os
 import random
 from gtts import gTTS
 import pyttsx3
+from sensor import *
 
 recognizer = sr.Recognizer()
 
@@ -31,19 +32,22 @@ def record_audio(ask=False):
 def respond(voice_data):
     if "what is your name" in voice_data:
         speak("My name is Alexa")
-    if "what time is it" in voice_data:
+    elif "what time is it" in voice_data:
         speak(ctime())
-    if "search" in voice_data:
+    elif "search" in voice_data:
         search = record_audio("What do you want to search for?")
         url = "https://google.com/search?q=" + search
         webbrowser.get().open(url)
         speak("Here is what I found for " + search)
-    if "find location" in voice_data:
+    elif "find location" in voice_data:
         location = record_audio("What is the location?")
         url = "https://google.nl/maps/place/" + location + "/&amp;"
         webbrowser.get().open(url)
         speak("Here is the location of " + location)
-    if "exit" in voice_data:
+    elif "heart rate" in voice_data:
+        speak("Place your index finger on the sensor with steady pressure.")
+        measure()
+    elif "exit" in voice_data:
         exit()
 
 
