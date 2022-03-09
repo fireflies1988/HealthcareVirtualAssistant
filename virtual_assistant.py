@@ -14,6 +14,7 @@ def record_audio(ask=False):
     with sr.Microphone() as source:
         if ask:
             speak(ask)
+        recognizer.energy_threshold = 1000  # increase voice volume of speaker
         recognizer.adjust_for_ambient_noise(source, duration=1)
         audio = recognizer.listen(source)
         try:
