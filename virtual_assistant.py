@@ -29,21 +29,25 @@ def record_audio(ask=False):
 
 def respond(voice_data):
     if "what is your name" in voice_data:
-        speak("My name is Alexa")
-    if "what time is it" in voice_data:
+        speak("My name is Zira")
+    elif "what time is it" in voice_data:
         speak(ctime())
-    if "search" in voice_data:
+    elif "search" in voice_data:
         search = record_audio("What do you want to search for?")
         url = "https://google.com/search?q=" + search
         webbrowser.get().open(url)
         speak("Here is what I found for " + search)
-    if "find location" in voice_data:
+    elif "find location" in voice_data:
         location = record_audio("What is the location?")
         url = "https://google.nl/maps/place/" + location + "/&amp;"
         webbrowser.get().open(url)
         speak("Here is the location of " + location)
-    if "exit" in voice_data:
-        exit()
+    elif "heart rate" in voice_data:
+        speak("Please put your finger on the sensor and hold on a moment.")
+        # Do something...
+
+    else:
+        speak("Sorry, I'm not able to help with this one.")
 
 
 def speak(audio_string):
@@ -66,4 +70,5 @@ def speak(audio_string):
 
 
 def introduce():
+    playsound.playsound('sound/cortana_sound_effect.mp3')
     speak("Hi, I'm your healthcare virtual assistant. What can I do for you?")
