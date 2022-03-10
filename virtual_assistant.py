@@ -6,6 +6,7 @@ import os
 import random
 from gtts import gTTS
 import pyttsx3
+from datetime import datetime
 from sensor import *
 
 recognizer = sr.Recognizer()
@@ -20,19 +21,21 @@ def record_audio(ask=False):
         try:
             voice_data = recognizer.recognize_google(audio, language="en-US")
         except sr.UnknownValueError:
-            # speak("Sorry, I did not get that.")
+            speak("Sorry, I did not get that.")
             raise sr.UnknownValueError
         except sr.RequestError:
-            # speak("Sorry, my speech service is down.")
+            speak("Sorry, my speech service is down.")
             raise sr.RequestError
         return voice_data
 
 
 def respond(voice_data):
+    voice_data = voice_data.lower()
+    print(voice_data)
     if "what is your name" in voice_data:
         speak("My name is Zira")
-    elif "what time is it" in voice_data:
-        speak(ctime())
+    elif ("what time is it" or "what is the time") in voice_data:
+        speak(datetime.now().strftime('%H:%M'))
     elif "search" in voice_data:
         search = record_audio("What do you want to search for?")
         url = "https://google.com/search?q=" + search
@@ -46,7 +49,10 @@ def respond(voice_data):
     elif "heart rate" in voice_data:
         speak("Place your index finger on the sensor with steady pressure.")
         measure()
-
+    elif "hospital" in voice_data:
+        url = "https://google.com/search?q=hospital-near-me"
+        webbrowser.get().open(url)
+        speak("I found a few hospitals near you.")
     else:
         speak("Sorry, I'm not able to help with this one.")
 
