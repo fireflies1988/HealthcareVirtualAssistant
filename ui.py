@@ -18,17 +18,15 @@ def listen():
     global command
     try:
         command = record_audio()
+        respond(command)
         isListening = not isListening
         speakButton.config(image=blueEdgeMicIcon)
-        respond(command)
     except sr.UnknownValueError:
         isListening = not isListening
         speakButton.config(image=blueEdgeMicIcon)
-        speak("Sorry, I did not get that.")
     except sr.RequestError:
         isListening = not isListening
         speakButton.config(image=blueEdgeMicIcon)
-        speak("Sorry, my speech service is down.")
 
 
 #
