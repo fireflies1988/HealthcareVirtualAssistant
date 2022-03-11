@@ -2,6 +2,7 @@ from tkinter import *
 from virtual_assistant import *
 import threading
 
+global command
 command = ""
 
 
@@ -37,7 +38,8 @@ def on_click_speak_button():
     global isListening
     if not isListening:
         isListening = not isListening
-        threading.Thread(target=change_speak_button_status).start()
+        # threading.Thread(target=change_speak_button_status).start()
+        change_speak_button_status()
         threading.Thread(target=listen).start()
 
 
@@ -51,9 +53,9 @@ def on_leave_speak_button(event):
         speakButton.config(image=blueEdgeMicIcon)
 
 
-def on_click_ask_entry(event):
+def on_click_ask_entry(event):  # textfield function
     askEntry.configure(state=NORMAL)
-    askEntry.delete(0, END)
+    askEntry.delete(0, END)  # delete string in textfield
 
 
 def on_focus_out_ask_entry(event):
@@ -91,7 +93,7 @@ def on_click_three_dots_button(event):
 # UI Design
 #
 window = Tk()
-window.bind_all("<Button-1>", lambda event: event.widget.focus_set())
+window.bind_all("<Button-1>", lambda event: event.widget.focus_set()) #
 
 # variables
 isListening = False
@@ -147,5 +149,3 @@ threeDotsButton = Button(window,
                          borderwidth=0)
 threeDotsButton.bind("<Button-1>", on_click_three_dots_button)
 threeDotsButton.place(relx=0, rely=0, x=10, y=10)
-
-
