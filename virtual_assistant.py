@@ -1,6 +1,4 @@
-import math
 import speech_recognition as sr
-from time import ctime
 import webbrowser
 import playsound
 import os
@@ -8,9 +6,10 @@ import random
 from gtts import gTTS
 import pyttsx3
 from datetime import datetime
-from sensor import *
+import sensor
 from requests_html import HTMLSession
 import requests
+import pyjokes
 
 recognizer = sr.Recognizer()
 engine = pyttsx3.init()
@@ -23,7 +22,7 @@ def record_audio(ask=False):
         if ask:
             speak(ask)
         recognizer.adjust_for_ambient_noise(source, duration=1)
-        audio = recognizer.listen(source)
+        audio = recognizer.listen(source)  # lúc đang nghe thì tất cả các luồng sẽ dừng
         try:
             voice_data = recognizer.recognize_google(audio, language="en-US")
         except sr.UnknownValueError:
@@ -38,34 +37,49 @@ def record_audio(ask=False):
 def respond(voice_data):
     voice_data = voice_data.lower()
     print(voice_data)
-    if "what is your name" in voice_data:
+    if "what is your name" in voice_data or "your name" in voice_data:
         speak("My name is Zira")
-    elif ("what time is it" or "what is the time") in voice_data:
+    elif "what time is it" in voice_data or "what is the time" in voice_data:
         speak(datetime.now().strftime('%H:%M'))
     elif "search" in voice_data:
         search = record_audio("What do you want to search for?")
         url = "https://google.com/search?q=" + search
         webbrowser.get().open(url)
         speak("Here is what I found for " + search)
+
     elif "find location" in voice_data:
         location = record_audio("What is the location?")
         url = "https://google.nl/maps/place/" + location + "/&amp;"
         webbrowser.get().open(url)
         speak("Here is the location of " + location)
-    elif "heart rate" in voice_data:
-        speak("Place your index finger on the sensor with steady pressure.")
-        measure()
-    elif "BMI" in voice_data:
-        h = speak("Please tell me your height")
-        w = speak("Please tell me your weight")
+
+    elif "weather" in voice_data:
+        weather_scrapping()
+
+    elif "heart rate" in voice_data:  # display heart rate of user
+        arduino_data = sensor.init_sensor()
+        if arduino_data is None:
+            speak("This function is not available!")
+        else:
+            speak("Place your index finger on the sensor with steady pressure.")
+            sensor.measure(arduino_data)
+
+    elif "bmi" in voice_data:  # calculate BMI index
+        h = record_audio("Please tell me your height")
+        w = record_audio("Please tell me your weight")
         height = float(h)
         weight = float(w)
         bmi(height, weight)
 
-    elif "hospital" in voice_data:
+    elif "hospital" in voice_data:  # search for hospital nearby
         url = "https://google.com/search?q=hospital-near-me"
         webbrowser.get().open(url)
         speak("I found a few hospitals near you.")
+
+    elif "joke" in voice_data:  # tell s stupid joke
+        my_joke = pyjokes.get_joke(language='en', category='all')
+        speak(my_joke)
+
     else:
         speak("Sorry, I'm not able to help with this one.")
 
@@ -89,7 +103,7 @@ def weather_scrapping():
     temp = r.html.find('span#wob_tm', first=True).text
     unit = r.html.find('div.vk_bk.wob-unit span.wob_t', first=True).text
     desc = r.html.find('div.VQF4g', first=True).find('span#wob_dc', first=True).text
-    print(query, temp, unit, desc)
+    speak("The temperature today is" + temp + "degree celsius")
 
 
 def weather():
@@ -118,12 +132,12 @@ def introduce():
 
 
 def bmi(height, weight):
-    result = weight / math.sqrt(height)
+    result = weight / (height * height)
     if result < 16:
         speak('You are Severe thinness')
-    if result >= 16 & result < 17:
+    elif result >= 16 & result < 17:
         speak('You are moderate thinness ')
-    if result >= 17 & result < 18.5:
+    elif result >= 17 & result < 18.5:
         speak('You are thin')
     elif result >= 18.5 & result < 25:
         speak('You are normal')
