@@ -1,6 +1,9 @@
+import tkinter
 from tkinter import *
 from virtual_assistant import *
+from PIL import Image, ImageTk
 import threading
+import BubbleText
 
 global command
 command = ""
@@ -93,13 +96,14 @@ def on_click_three_dots_button(event):
 # UI Design
 #
 window = Tk()
-window.bind_all("<Button-1>", lambda event: event.widget.focus_set()) #
+window.bind_all("<Button-1>", lambda event: event.widget.focus_set())  #
 
-# variables
+# variables #initialize the icons
 isListening = False
 blueEdgeMicIcon = PhotoImage(file="icon/blue-edge-mic.png")
 blueMicIcon = PhotoImage(file="icon/blue-mic.png")
 voiceWaveIcon = PhotoImage(file="icon/voice-wave.png")
+heartIcon = ImageTk.PhotoImage(Image.open("icon/heart.png"))
 
 # window
 window.geometry("390x640")
@@ -115,6 +119,25 @@ speakButton = Button(window,
 speakButton.place(relx=0.5, rely=1.0, y=-50, anchor=S)
 speakButton.bind("<Enter>", on_enter_speak_button)
 speakButton.bind("<Leave>", on_leave_speak_button)
+
+# heart icon
+heart_button = Button(window,
+                      image=heartIcon,
+                      borderwidth=0)
+# heart_button.place(relx=0.5, rely=0.0, y=50, anchor=N)
+
+
+heart_rate_label = Label(window, text="Your heart rate is")
+# heart_rate_label.place(relx=0.5, rely=0.0, anchor=N, y=120)
+spo2_label = Label(window, text="Your spo2 is")
+# spo2_label.place(relx=0.5, rely=0.0, anchor=N, y=140)
+measure_label = Label(ui.window, text=f"Measuring...", font=("Roboto", 14), padx=10)
+warning_label = Label(ui.window, text=f"Place your index finger on sensor", font=("Roboto", 14), padx=10)
+
+# BubleText
+# bubble_text = BubbleText(10, None, 0.0, 0.0, "Hi, I'm your healthcare virtual assistant. What can I do for you?")
+# new_label = Label(window, text="Hi, I'm your healthcare virtual assistant. What can I do for you?")
+
 
 # Textfield "Ask me"
 askEntry = Entry(window,
