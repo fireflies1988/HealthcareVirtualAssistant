@@ -1,3 +1,5 @@
+import threading
+
 import speech_recognition as sr
 import webbrowser
 import playsound
@@ -10,6 +12,8 @@ import sensor
 from requests_html import HTMLSession
 import requests
 import pyjokes
+
+import ui
 
 recognizer = sr.Recognizer()
 engine = pyttsx3.init()
@@ -62,7 +66,8 @@ def respond(voice_data):
             speak("This function is not available!")
         else:
             speak("Place your index finger on the sensor with steady pressure.")
-            sensor.measure(arduino_data)
+            # sensor.measure(arduino_data)
+            sensor.measure_max30100(arduino_data)
 
     elif "bmi" in voice_data:  # calculate BMI index
         h = record_audio("Please tell me your height")
