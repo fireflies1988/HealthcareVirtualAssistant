@@ -1,4 +1,5 @@
 import threading
+from datetime import date
 from tkinter import *
 
 import serial
@@ -83,16 +84,21 @@ def measure_max30100(arduino_data):
 
     while flag:
         data_from_sensor = read_sensor(arduino_data)
-        # print(data_from_sensor)
+        print(data_from_sensor)
         data = data_from_sensor.split(",")
-        if data.__len__() > 1:
-            if data_from_sensor.__contains__("0,0"):
+        if data.__len__() > 1:  # chỉ lấy dữ liệu có đầy đủ cả hai phần tử
+            if data[0] == "0" or data[1] == "0":
                 timeout = None
                 raw_data.clear()
                 count += 1
 
                 if count > 5:
-                    ui.measure_label.place(relx=-0.5, rely=-1.0, anchor=N, y=120)
+                    ui.measure_label.place_forget()
+                    ui.warning_label.place_forget()
+                    ui.heart_rate_label.place_forget()
+                    ui.spo2_label.place_forget()
+
+                    # ui.measure_label.place(relx=-0.5, rely=-1.0, anchor=N, y=120)
                     ui.warning_label.place(relx=0.5, rely=0.0, anchor=N, y=120)
                     virtual_assistant.speak("Place your index finger on the sensor")
                     # thread = threading.Thread(
@@ -105,20 +111,31 @@ def measure_max30100(arduino_data):
 
             if time.time() > timeout:
                 flag = False
-            else:
-                # if data[1] == 0 or data[1] == 0:
-                #     continue
-                # else:
+
+            else:  # khi mọi thứ đã hoàn hảo
                 sensor_data = SensorData(heart_rate=data[0], spo2=data[1])
                 raw_data.append(sensor_data)
 
                 # ui control
                 ui.heart_button.place(relx=0.5, rely=0.0, y=50, anchor=N)
-                ui.warning_label.place(relx=-0.5, rely=-1.0, anchor=N, y=120)  # destroy warning label
-                ui.measure_label.place(relx=0.5, rely=0.0, anchor=N, y=120)  # init measuring label
+                # ui.warning_label.place(relx=-0.5, rely=-1.0, anchor=N, y=120)  # destroy warning label
+                # ui.measure_label.place(relx=0.5, rely=0.0, anchor=N, y=120)  # init measuring label
+                ui.measure_label.place_forget()
+                ui.warning_label.place_forget()
+                ui.heart_rate_label.place_forget()
+                ui.spo2_label.place_forget()
+
+                ui.heart_rate_label = Label(ui.window, text=f"Your heart rate is {sensor_data.heart_rate}bpm",
+                                            font=("Roboto", 14), padx=10)
+                ui.heart_rate_label.place(relx=0.5, rely=0.0, anchor=N, y=120)
+                ui.spo2_label = Label(ui.window, text=f"Your spo2 is {sensor_data.spo2}%",
+                                      font=("Roboto", 14),
+                                      padx=10)
+                ui.spo2_label.place(relx=0.5, rely=0.0, anchor=N, y=160)
 
         time.sleep(1)
 
+    # tính toán nhịp tim trung bình
     sum_heart_rate = 0
     for d in raw_data:
         sum_heart_rate += int(d.heart_rate)
@@ -126,10 +143,17 @@ def measure_max30100(arduino_data):
     avg_heart_rate = int(sum_heart_rate / raw_data.__len__())
 
     # ui control
+    ui.measure_label.place_forget()
+    ui.warning_label.place_forget()
+    ui.heart_rate_label.place_forget()
+    ui.spo2_label.place_forget()
+
+    ui.heart_rate_label.place(relx=-1.0, rely=-1.0, anchor=N)
     ui.heart_rate_label = Label(ui.window, text=f"Your average heart rate is {avg_heart_rate}bpm",
                                 font=("Roboto", 14), padx=10)
     ui.heart_rate_label.place(relx=0.5, rely=0.0, anchor=N, y=120)
-    ui.spo2_label = Label(ui.window, text=f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2}%", font=("Roboto", 14), padx=10)
+    ui.spo2_label = Label(ui.window, text=f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2}%", font=("Roboto", 14),
+                          padx=10)
     ui.spo2_label.place(relx=0.5, rely=0.0, anchor=N, y=160)
 
     virtual_assistant.speak(f"Your average heart rate is {avg_heart_rate} bpm")

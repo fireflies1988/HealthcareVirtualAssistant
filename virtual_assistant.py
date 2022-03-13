@@ -7,7 +7,7 @@ import os
 import random
 from gtts import gTTS
 import pyttsx3
-from datetime import datetime
+from datetime import datetime, time
 import sensor
 from requests_html import HTMLSession
 import requests
@@ -69,6 +69,9 @@ def respond(voice_data):
             # sensor.measure(arduino_data)
             sensor.measure_max30100(arduino_data)
 
+    elif "temperature" in voice_data:
+        pass
+
     elif "bmi" in voice_data:  # calculate BMI index
         h = record_audio("Please tell me your height")
         w = record_audio("Please tell me your weight")
@@ -99,7 +102,7 @@ def my_location():
 
 def weather_scrapping():
     s = HTMLSession()
-    query = 'ho chi minh city'
+    query = 'Ho Chi Minh city'
     url = f'https://www.google.com/search?q=weather+{query}'
 
     r = s.get(url, headers={
@@ -108,11 +111,32 @@ def weather_scrapping():
     temp = r.html.find('span#wob_tm', first=True).text
     unit = r.html.find('div.vk_bk.wob-unit span.wob_t', first=True).text
     desc = r.html.find('div.VQF4g', first=True).find('span#wob_dc', first=True).text
-    speak("The temperature today is" + temp + "degree celsius")
+    speak(f"The temperature today in {query} is " + temp + " degree celsius")
 
 
 def weather():
-    speak("Hello")
+    city = "ho+chi+minh"
+    api_key = "832cbe9f134fd35f927eada6c19acf17"
+    api = f" http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}"
+    json_data = requests.get(api).json()
+    city_name = json_data["name"]
+    condition = json_data['weather'][0]['main']
+    temp = int(json_data['main']['temp'] - 273.15)
+    min_temp = int(json_data['main']['temp_min'] - 273.15)
+    max_temp = int(json_data['main']['temp_max'] - 273.15)
+    pressure = json_data['main']['pressure']
+    humidity = json_data['main']['humidity']
+    wind = json_data['wind']['speed']
+    description = json_data['weather'][0]['description']
+
+    sunrise = time.srftime("%I:%M:%S", time.gmtime(json_data['sys']['sunrise'] - 25200))
+    sunset = time.srftime("%I:%M:%S", time.gmtime(json_data['sys']['sunset'] - 25200))
+
+    final_info = condition + "\n" + str(temp) + "℃"
+    final_data = "\n" + "Max Temp: " + str(max_temp) + "\n" + "Min Temp: " + str(min_temp) + "\n" + "Pressure: " + str(
+        pressure) + "\n" + "Humidity: " + str(humidity) + "\n"
+
+    print(final_data)
 
 
 def speak(audio_string):
@@ -154,3 +178,7 @@ def bmi(height, weight):
         speak('You are Obese type 2')
     else:
         speak('You are Obese type 3')
+
+
+if __name__ == "__main__":  # chỉ chạy các chức năng có trong file sensor và không chạy trong các file khác
+    weather()

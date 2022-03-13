@@ -1,7 +1,9 @@
 import tkinter
 from tkinter import *
+
+import ui
 from virtual_assistant import *
-from PIL import Image, ImageTk
+
 import threading
 import BubbleText
 
@@ -37,6 +39,18 @@ def listen():
 # UI EVENT HANDLERS
 #
 def on_click_speak_button():
+    heart_button.place(relx=-1.0, rely=-1.0, anchor=N)
+    # heart_rate_label.place(relx=-1.0, rely=-1.0, anchor=N)
+    # spo2_label.place(relx=-1.0, rely=-1.0, anchor=N)
+    # measure_label.place(relx=-1.0, rely=-1.0, anchor=N)
+    # warning_label.place(relx=-1.0, rely=-1.0, anchor=N)
+    measure_label.place_forget()
+    warning_label.place_forget()
+    heart_rate_label.place_forget()
+    spo2_label.place_forget()
+
+
+
     global command
     global isListening
     if not isListening:
@@ -103,7 +117,7 @@ isListening = False
 blueEdgeMicIcon = PhotoImage(file="icon/blue-edge-mic.png")
 blueMicIcon = PhotoImage(file="icon/blue-mic.png")
 voiceWaveIcon = PhotoImage(file="icon/voice-wave.png")
-heartIcon = ImageTk.PhotoImage(Image.open("icon/heart.png"))
+heartIcon = PhotoImage(file="icon/heart.png")
 
 # window
 window.geometry("390x640")
@@ -133,6 +147,7 @@ spo2_label = Label(window, text="Your spo2 is")
 # spo2_label.place(relx=0.5, rely=0.0, anchor=N, y=140)
 measure_label = Label(ui.window, text=f"Measuring...", font=("Roboto", 14), padx=10)
 warning_label = Label(ui.window, text=f"Place your index finger on sensor", font=("Roboto", 14), padx=10)
+
 
 # BubleText
 # bubble_text = BubbleText(10, None, 0.0, 0.0, "Hi, I'm your healthcare virtual assistant. What can I do for you?")
