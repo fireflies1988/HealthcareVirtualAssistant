@@ -1,18 +1,25 @@
+import json
 import threading
+from pprint import pprint
+from tkinter import *
 
+import geocoder
 import speech_recognition as sr
 import webbrowser
 import playsound
 import os
 import random
+
+from geopy import Nominatim
 from gtts import gTTS
 import pyttsx3
 from datetime import datetime, time
+
 import sensor
 from requests_html import HTMLSession
 import requests
 import pyjokes
-
+import time
 import ui
 
 recognizer = sr.Recognizer()
@@ -42,8 +49,16 @@ def respond(voice_data):
     voice_data = voice_data.lower()
     print(voice_data)
     if "what is your name" in voice_data or "your name" in voice_data:
+        ui.name_button.place(relx=0.5, rely=0.0, y=50, anchor=N)
+        ui.name_label = Label(ui.window, text=f"My name is Zira", font=("Roboto", 18), padx=10)
+        ui.name_label.place(relx=0.5, rely=0.0, anchor=N, y=120)
+
         speak("My name is Zira")
     elif "what time is it" in voice_data or "what is the time" in voice_data:
+        ui.time_button.place(relx=0.5, rely=0.0, y=50, anchor=N)
+        ui.name_label = Label(ui.window, text=f"{datetime.now().strftime('%H:%M')}", font=("Roboto", 18), padx=10)
+        ui.name_label.place(relx=0.5, rely=0.0, anchor=N, y=120)
+
         speak(datetime.now().strftime('%H:%M'))
     elif "search" in voice_data:
         search = record_audio("What do you want to search for?")
@@ -58,7 +73,7 @@ def respond(voice_data):
         speak("Here is the location of " + location)
 
     elif "weather" in voice_data:
-        weather_scrapping()
+        weather()
 
     elif "heart rate" in voice_data:  # display heart rate of user
         arduino_data = sensor.init_sensor()
@@ -70,7 +85,11 @@ def respond(voice_data):
             sensor.measure_max30100(arduino_data)
 
     elif "temperature" in voice_data:
+        sensor.read_temperature()
         pass
+
+    elif "where am i" in voice_data:
+        my_location()
 
     elif "bmi" in voice_data:  # calculate BMI index
         h = record_audio("Please tell me your height")
@@ -96,8 +115,57 @@ def covid_track():
     speak("total case in vietnam is 19000")
 
 
+def get_address_by_location(latitude, longitude, language="en"):
+    app = Nominatim(user_agent="GetLoc")
+    """This function returns an address as raw from a location
+    will repeat until success"""
+    # build coordinates string to pass to reverse() function
+    coordinates = f"{latitude}, {longitude}"
+    # sleep for a second to respect Usage Policy
+    time.sleep(1)
+    try:
+        return app.reverse(coordinates, language=language).raw
+    except:
+        return get_address_by_location(latitude, longitude)
+
+
+def foo():
+    key = "YepjuJR2pvYEQrdcXihIvIHOiYWhFFUQ"
+    send_url = f"http://api.ipstack.com/check?access_key={key}"
+    print(send_url)
+    geo_req = requests.get(send_url)
+    geo_json = json.loads(geo_req.text)
+    latitude = geo_json['latitude']
+    longitude = geo_json['longitude']
+    city = geo_json['city']
+    print(city)
+
+
 def my_location():
-    speak('My location is 1029')
+    # loc = Nominatim(user_agent="GetLoc")
+
+    # entering the location name
+    # getLoc = loc.geocode("Ho Chi Minh city")
+    # geolocator = Nominatim(user_agent="My App")
+    latlng = geocoder.ip('me').latlng
+    lat = latlng[0]
+    lng = latlng[1]
+
+    # print(latlng)
+    data = get_address_by_location(lat, lng)
+    pprint(data)
+    country = data['address']['country']
+    road = data['address']['road']
+    suburb = data['address']['suburb']
+    town = data['address']['town']
+    display_name = data['display_name']
+    city = display_name.split(",")[3]
+
+    ui.location_button.place(relx=0.5, rely=0.0, y=50, anchor=N)
+    ui.location_label = Label(ui.window, text=f"{display_name}", font=("Roboto", 14), padx=10,
+                              wraplength=300, justify="center")
+    ui.location_label.place(relx=0.5, rely=0.0, anchor=N, y=150)
+    speak("Here's your location")
 
 
 def weather_scrapping():
@@ -120,23 +188,42 @@ def weather():
     api = f" http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}"
     json_data = requests.get(api).json()
     city_name = json_data["name"]
+    country_name = json_data['sys']['country']
     condition = json_data['weather'][0]['main']
     temp = int(json_data['main']['temp'] - 273.15)
+    temp_f = int(json_data['main']['temp'] * 9 / 5 - 459.67)
     min_temp = int(json_data['main']['temp_min'] - 273.15)
     max_temp = int(json_data['main']['temp_max'] - 273.15)
     pressure = json_data['main']['pressure']
     humidity = json_data['main']['humidity']
-    wind = json_data['wind']['speed']
+    wind = int(json_data['wind']['speed'] * 3.6)
     description = json_data['weather'][0]['description']
 
-    sunrise = time.srftime("%I:%M:%S", time.gmtime(json_data['sys']['sunrise'] - 25200))
-    sunset = time.srftime("%I:%M:%S", time.gmtime(json_data['sys']['sunset'] - 25200))
+    # sunrise = time.strftime("%I:%M:%S", time.gmtime(json_data['sys']['sunrise'] - 25200))
+    # sunset = time.strftime("%I:%M:%S", time.gmtime(json_data['sys']['sunset'] - 25200))
 
     final_info = condition + "\n" + str(temp) + "℃"
     final_data = "\n" + "Max Temp: " + str(max_temp) + "\n" + "Min Temp: " + str(min_temp) + "\n" + "Pressure: " + str(
         pressure) + "\n" + "Humidity: " + str(humidity) + "\n"
 
     print(final_data)
+    print(final_info)
+    speak("Here's the weather right now")
+
+    ui.city_name_label = Label(ui.window, text=f"{city_name}, {country_name}", font=("Roboto", 18), padx=10)
+    ui.temperature_label = Label(ui.window, text=f"{temp} ℃ | {temp_f} °F", font=("Roboto", 16), padx=10)
+    ui.weather_label = Label(ui.window, text=f"{condition}, {description}", font=("Roboto Light", 12), padx=10)
+    # ui.description_label = Label(ui.window, text=f"", font=("Roboto", 12), padx=10)
+    ui.humidity_label = Label(ui.window, text=f"Humidity: {humidity} %", font=("Roboto", 14), padx=10)
+    ui.wind_label = Label(ui.window, text=f"Wind: {wind} km/h", font=("Roboto", 14), padx=10)
+
+    ui.sun_button.place(relx=0.5, rely=0.0, y=50, anchor=N)
+    ui.city_name_label.place(relx=0.5, rely=0.0, anchor=N, y=120)
+    ui.temperature_label.place(relx=0.5, rely=0.0, anchor=N, y=160)
+    ui.weather_label.place(relx=0.5, rely=0.0, anchor=N, y=195)
+    # ui.description_label.place(relx=0.5, rely=0.0, anchor=N, y=140)
+    ui.humidity_label.place(relx=0.5, rely=0.0, anchor=N, y=225)
+    ui.wind_label.place(relx=0.5, rely=0.0, anchor=N, y=255)
 
 
 def speak(audio_string):
@@ -181,4 +268,6 @@ def bmi(height, weight):
 
 
 if __name__ == "__main__":  # chỉ chạy các chức năng có trong file sensor và không chạy trong các file khác
-    weather()
+    # weather()
+    # foo()
+    my_location()
