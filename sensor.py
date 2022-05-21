@@ -243,6 +243,75 @@ def measure_max30102(arduino_data):
     virtual_assistant.speak(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
 
 
+def measure_max30102_df_robot(arduino_data):
+    raw_data = []
+    flag = True
+    timeout = None
+    count = 0
+
+    while flag:
+        data_from_sensor = read_sensor(arduino_data)
+        print(data_from_sensor)
+        if 'No finger' in data_from_sensor:
+            count += 1
+
+            if count > (5 * 1000):
+                count = 0
+                raw_data.clear()
+
+                ui.measure_label.place_forget()
+                ui.warning_label.place_forget()
+                ui.heart_rate_label.place_forget()
+                ui.spo2_label.place_forget()
+
+                ui.warning_label.place(relx=0.5, rely=0.0, anchor=N, y=120)
+                virtual_assistant.speak("Place your index finger on the sensor")
+
+        elif data_from_sensor.__len__() == 0:
+            continue
+        else:
+            if timeout is None:
+                timeout = time.time() + 15
+
+        if time.time() > timeout:
+            flag = False
+        else:
+            data_split = data_from_sensor.split(",")
+            sensor_data = SensorData(heart_rate=data_split[0], average_heart_rate=data_split[1], spo2=data_split[2])
+            raw_data.append(sensor_data)
+
+            ui.heart_button.place(relx=0.5, rely=0.0, y=50, anchor=N)
+
+            ui.measure_label.place_forget()
+            ui.warning_label.place_forget()
+            ui.heart_rate_label.place_forget()
+            ui.spo2_label.place_forget()
+
+            ui.measure_label.place(relx=0.5, rely=0.0, anchor=N, y=120)  # init measuring label
+
+    data = raw_data[raw_data.__len__() - 1]
+    array = data.split(",")
+    virtual_assistant.speak("Your heart rate is " + array[0] + " bpm")
+
+    # ui control
+    ui.measure_label.place_forget()
+    ui.warning_label.place_forget()
+    ui.heart_rate_label.place_forget()
+    ui.spo2_label.place_forget()
+
+    ui.heart_rate_label.place_forget()
+    ui.heart_rate_label = Label(ui.window,
+                                text=f"Your average heart rate is {raw_data[raw_data.__len__() - 1].average_heart_rate}bpm",
+                                font=("Roboto", 14), padx=10)
+    ui.heart_rate_label.place(relx=0.5, rely=0.0, anchor=N, y=120)
+
+    ui.spo2_label = Label(ui.window, text=f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2}%", font=("Roboto", 14),
+                          padx=10)
+    ui.spo2_label.place(relx=0.5, rely=0.0, anchor=N, y=160)
+
+    virtual_assistant.speak(f"Your average heart rate is {raw_data[raw_data.__len__() - 1]} bpm")
+    virtual_assistant.speak(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
+
 if __name__ == "__main__":  # chỉ chạy các chức năng có trong file sensor và không chạy trong các file khác
     arduino = init_sensor()
     # measure_max30100(arduino)
