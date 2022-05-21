@@ -6,6 +6,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from ui import *
 from app import Ui_MainWindow
+from alarm_dialog import Ui_Dialog
 
 global command
 command = ""
@@ -32,24 +33,30 @@ def listen2():
         # speakButton.config(image=blueEdgeMicIcon)
 
 
-def respond2(voice_data):
+def respond2(self, voice_data):
     voice_data = voice_data.lower()
     print(voice_data)
+    result = ""
     if "what is your name" in voice_data or "your name" in voice_data:
+        result = "My name is Zira"
         speak("My name is Zira")
 
     elif "what time is it" in voice_data or "what is the time" in voice_data:
         speak(datetime.now().strftime('%H:%M'))
+        result = datetime.now().strftime('%H:%M')
+
     elif "search" in voice_data:
         search = record_audio("What do you want to search for?")
         url = "https://google.com/search?q=" + search
         webbrowser.get().open(url)
+        result = "Here is what I found for " + search
         speak("Here is what I found for " + search)
 
     elif "find location" in voice_data:
         location = record_audio("What is the location?")
         url = "https://google.nl/maps/place/" + location + "/&amp;"
         webbrowser.get().open(url)
+        result = "Here is the location of " + location
         speak("Here is the location of " + location)
 
     elif "weather" in voice_data:
@@ -85,13 +92,17 @@ def respond2(voice_data):
 
     elif "joke" in voice_data:  # tell s stupid joke
         my_joke = pyjokes.get_joke(language='en', category='all')
+        result = my_joke
         speak(my_joke)
 
     elif "set alarm" in voice_data:  # set alarm
         time = record_audio("what is the time")
 
     else:
+        result = "Sorry, I'm not able to help with this one."
         speak("Sorry, I'm not able to help with this one.")
+
+    self.uic.chat_bot.setText(result)
 
 
 class MainWindow:
@@ -99,15 +110,15 @@ class MainWindow:
         self.main_win = QMainWindow()
         self.uic = Ui_MainWindow()
         self.uic.setupUi(self.main_win)
-        self.uic.btn_set_alarm.clicked.connect(hello)
         self.uic.btn_speak.clicked.connect(self.on_click_speak_button)
-
+        self.uic.btn_send.clicked.connect(self.on_click_send)
         threading.Thread(target=introduce, daemon=True).start()
 
     def show(self):
         self.main_win.show()
 
-    def on_click_speak_button(self):
+    @staticmethod
+    def on_click_speak_button():
         global command
         global isListening
         if not isListening:
@@ -115,6 +126,17 @@ class MainWindow:
             # threading.Thread(target=change_speak_button_status).start()
             change_speak_button_status()
             threading.Thread(target=listen2).start()
+
+    def on_click_send(self):
+        text = ""
+        if self.uic.ask_entry.text() != "":
+            text = self.uic.ask_entry.text()
+
+            threading.Thread(target=respond2(self, text), daemon=True).run()
+
+            self.uic.chat_user.setText(text)
+            self.uic.ask_entry.setText("")
+            print(text)
 
 
 if __name__ == "__main__":
