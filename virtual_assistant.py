@@ -107,9 +107,15 @@ def respond(voice_data):
         my_joke = pyjokes.get_joke(language='en', category='all')
         speak(my_joke)
 
+    elif "set alarm" in voice_data: #set alarm
+        time = record_audio("what is the time")
+
+
     else:
         speak("Sorry, I'm not able to help with this one.")
 
+def set_alarm(time):
+    speak("hello")
 
 def covid_track():
     speak("total case in vietnam is 19000")

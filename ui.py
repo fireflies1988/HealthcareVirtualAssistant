@@ -5,7 +5,6 @@ import ui
 from virtual_assistant import *
 
 import threading
-import BubbleText
 
 global command
 command = ""
