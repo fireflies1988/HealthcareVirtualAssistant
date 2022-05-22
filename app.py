@@ -106,7 +106,8 @@ class Ui_MainWindow(object):
         font = QtGui.QFont()
         font.setFamily("Roboto")
         self.weather_widget.setFont(font)
-        self.weather_widget.setStyleSheet("background: #F0F0F0")
+        self.weather_widget.setStyleSheet("background: #fff;\n"
+"border-radius:10px")
         self.weather_widget.setObjectName("weather_widget")
         self.label_11 = QtWidgets.QLabel(self.weather_widget)
         self.label_11.setEnabled(True)
