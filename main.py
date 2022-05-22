@@ -42,6 +42,15 @@ class MainWindow:
         self.uic = Ui_MainWindow()
         self.uic.setupUi(self.main_win)
         self.uic.btn_speak.clicked.connect(self.on_click_speak_button)
+        self.uic.btnUpdate.clicked.connect(self.updatePatient)
+
+        self.uic.lineEditPatientCode.setText("patientcode")
+        self.uic.lineEditName.setText("name")
+        self.uic.radioButtonMale.setChecked(True)
+
+        self.uic.lineEditPhone.setText("0158181858")
+        self.uic.textEditDisease.setText("ooooo\naaaaaa")
+
         self.uic.btn_send.clicked.connect(self.on_click_send)
         self.uic.heart_widget.hide()
         self.speechRunnable = None
@@ -50,6 +59,18 @@ class MainWindow:
 
     def show(self):
         self.main_win.show()
+
+    def updatePatient(self):
+        code = self.uic.lineEditPatientCode.text()
+        name = self.uic.lineEditName.text()
+        sex = ""
+        if self.uic.radioButtonMale.isChecked():
+            sex = self.uic.radioButtonMale.text()
+        else:
+            sex = self.uic.radioButtonFemale.text()
+        phone = self.uic.lineEditPhone.text()
+        disease = self.uic.textEditDisease.toPlainText()
+        print(name + " " + phone + " " + sex + " " + disease)
 
     def on_click_speak_button(self):
         global command
