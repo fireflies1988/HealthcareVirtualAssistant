@@ -5,8 +5,9 @@
       <sourceFolder url="file://$MODULE_DIR$/icon" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/models" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/sound" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.10" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
