@@ -27,7 +27,11 @@
       <x>0</x>
       <y>0</y>
       <width>391</width>
+<<<<<<< HEAD
       <height>441</height>
+=======
+      <height>481</height>
+>>>>>>> 350bfe30018905c78f52bf71a42295a79caf884a
      </rect>
     </property>
     <property name="font">
@@ -49,79 +53,107 @@ background-color: #fff;</string>
      <attribute name="title">
       <string>Chat</string>
      </attribute>
-     <widget class="QWidget" name="heart_widget" native="true">
+     <widget class="QListWidget" name="chat_widget">
       <property name="geometry">
        <rect>
-        <x>70</x>
-        <y>70</y>
-        <width>221</width>
-        <height>181</height>
+        <x>10</x>
+        <y>20</y>
+        <width>371</width>
+        <height>411</height>
        </rect>
       </property>
-      <property name="font">
-       <font>
-        <family>Roboto</family>
-       </font>
+      <property name="styleSheet">
+       <string notr="true">border: 1px solid black</string>
       </property>
-      <widget class="QLabel" name="label_4">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
+     </widget>
+     <widget class="QWidget" name="chat_user_widget" native="true">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>40</y>
+        <width>281</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <widget class="QLabel" name="chat_user">
        <property name="geometry">
         <rect>
-         <x>80</x>
+         <x>0</x>
+         <y>5</y>
+         <width>231</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background: rgb(255, 255, 255);
+border-radius: 10px;
+padding-left: 10px</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_5">
+       <property name="geometry">
+        <rect>
+         <x>240</x>
          <y>10</y>
-         <width>71</width>
-         <height>71</height>
+         <width>31</width>
+         <height>31</height>
         </rect>
        </property>
        <property name="text">
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap>../../HealthcareVirtualAssistant/icon/heart.png</pixmap>
+        <pixmap>icon/woman.png</pixmap>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
-      <widget class="QLabel" name="heart_rate_label">
+     </widget>
+     <widget class="QWidget" name="chat_bot_widget" native="true">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>110</y>
+        <width>281</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <widget class="QLabel" name="chat_bot">
        <property name="geometry">
         <rect>
-         <x>60</x>
-         <y>80</y>
-         <width>101</width>
-         <height>16</height>
+         <x>50</x>
+         <y>5</y>
+         <width>231</width>
+         <height>41</height>
         </rect>
        </property>
-       <property name="font">
-        <font>
-         <family>Roboto</family>
-        </font>
+       <property name="styleSheet">
+        <string notr="true">background: rgb(255, 255, 255);
+border-radius: 10px;
+padding-left: 10px</string>
        </property>
        <property name="text">
-        <string>Your heart rate is </string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
+        <string>...</string>
        </property>
       </widget>
-      <widget class="QLabel" name="spo2_label">
+      <widget class="QLabel" name="label_7">
        <property name="geometry">
         <rect>
-         <x>60</x>
-         <y>110</y>
-         <width>101</width>
-         <height>16</height>
+         <x>10</x>
+         <y>10</y>
+         <width>31</width>
+         <height>31</height>
         </rect>
        </property>
-       <property name="font">
-        <font>
-         <family>Roboto</family>
-        </font>
-       </property>
        <property name="text">
-        <string>Your spo2 is</string>
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>icon/bot.png</pixmap>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
@@ -133,11 +165,25 @@ background-color: #fff;</string>
      <attribute name="title">
       <string>Alarm</string>
      </attribute>
+     <widget class="QListWidget" name="listWidget">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>90</y>
+        <width>371</width>
+        <height>351</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border:1px solid black;
+padding: 10px</string>
+      </property>
+     </widget>
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>140</x>
-        <y>20</y>
+        <x>150</x>
+        <y>40</y>
         <width>81</width>
         <height>21</height>
        </rect>
@@ -156,124 +202,6 @@ background-color: #fff;</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>70</y>
-        <width>47</width>
-        <height>13</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Roboto</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>Time</string>
-      </property>
-     </widget>
-     <widget class="QDateTimeEdit" name="alarm_time">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>90</y>
-        <width>194</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Roboto</family>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background: #fff</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_3">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>130</y>
-        <width>47</width>
-        <height>13</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Roboto</family>
-       </font>
-      </property>
-      <property name="text">
-       <string>Message</string>
-      </property>
-     </widget>
-     <widget class="QPlainTextEdit" name="alarm_message">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>150</y>
-        <width>321</width>
-        <height>61</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Roboto</family>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background: rgb(255, 255, 255)</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_set_alarm">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>240</y>
-        <width>75</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Roboto</family>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background: white;
-border: none;
-border-radius: 10px</string>
-      </property>
-      <property name="text">
-       <string>OK</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_cancel_set_alarm">
-      <property name="geometry">
-       <rect>
-        <x>190</x>
-        <y>240</y>
-        <width>75</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Roboto</family>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background: white;
-border: none;
-border-radius: 10px</string>
-      </property>
-      <property name="text">
-       <string>Cancel</string>
       </property>
      </widget>
     </widget>
@@ -537,7 +465,7 @@ background-color: #37455E;</string>
     <property name="geometry">
      <rect>
       <x>150</x>
-      <y>450</y>
+      <y>480</y>
       <width>80</width>
       <height>80</height>
      </rect>
@@ -557,7 +485,7 @@ background-color: #37455E;</string>
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../../HealthcareVirtualAssistant/icon/blue-mic.png</normaloff>../../HealthcareVirtualAssistant/icon/blue-mic.png</iconset>
+      <normaloff>icon/blue-mic.png</normaloff>icon/blue-mic.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -566,7 +494,7 @@ background-color: #37455E;</string>
      </size>
     </property>
    </widget>
-   <widget class="QPushButton" name="btn_send_4">
+   <widget class="QPushButton" name="btn_send">
     <property name="geometry">
      <rect>
       <x>340</x>
@@ -587,7 +515,7 @@ background-color: #37455E;</string>
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../../HealthcareVirtualAssistant/icon/send.png</normaloff>../../HealthcareVirtualAssistant/icon/send.png</iconset>
+      <normaloff>icon/send.png</normaloff>icon/send.png</iconset>
     </property>
     <property name="iconSize">
      <size>
@@ -596,7 +524,7 @@ background-color: #37455E;</string>
      </size>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_4">
+   <widget class="QLineEdit" name="ask_entry">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -607,8 +535,14 @@ background-color: #37455E;</string>
     </property>
     <property name="styleSheet">
      <string notr="true">background: transparent;
-border: 1px solid black;
+border:none;
 border-raidus: 10px;</string>
+    </property>
+    <property name="inputMask">
+     <string/>
+    </property>
+    <property name="cursorPosition">
+     <number>0</number>
     </property>
     <property name="dragEnabled">
      <bool>false</bool>

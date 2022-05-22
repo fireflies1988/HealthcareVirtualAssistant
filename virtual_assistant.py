@@ -107,15 +107,17 @@ def respond(voice_data):
         my_joke = pyjokes.get_joke(language='en', category='all')
         speak(my_joke)
 
-    elif "set alarm" in voice_data: #set alarm
+    elif "set alarm" in voice_data:  # set alarm
         time = record_audio("what is the time")
 
 
     else:
         speak("Sorry, I'm not able to help with this one.")
 
+
 def set_alarm(time):
     speak("hello")
+
 
 def covid_track():
     speak("total case in vietnam is 19000")
@@ -232,6 +234,12 @@ def weather():
     ui.wind_label.place(relx=0.5, rely=0.0, anchor=N, y=255)
 
 
+def speak_thread(audio_string):
+    print(audio_string)
+    engine.say(audio_string)
+    engine.runAndWait()
+
+
 def speak(audio_string):
     # use gtts
     # tts = gTTS(text=audio_string, lang="en")
@@ -243,9 +251,7 @@ def speak(audio_string):
     # os.remove(audio_file)
 
     # os.remove(audio_file) is not working so I use pyttsx3 instead
-    print(audio_string)
-    engine.say(audio_string)
-    engine.runAndWait()
+    threading.Thread(target=speak_thread(audio_string), daemon=True).start()
 
 
 def introduce():
