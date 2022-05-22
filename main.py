@@ -53,6 +53,7 @@ class MainWindow:
 
         self.uic.btn_send.clicked.connect(self.on_click_send)
         self.uic.heart_widget.hide()
+        self.uic.weather_widget.hide()
         self.speechRunnable = None
         self.speechRunnable = SpeechRunnable()
         threading.Thread(target=introduce2, args={self}, daemon=True).start()

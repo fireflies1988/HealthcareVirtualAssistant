@@ -74,6 +74,7 @@ def respond2(self, voice_data):
     self.uic.chat_user_widget.show()
     self.uic.chat_bot_widget.show()
     self.uic.heart_widget.hide()  # hide the heart_widget
+    self.uic.weather_widget.hide()
 
     voice_data = voice_data.lower()
     print(voice_data)
@@ -100,6 +101,8 @@ def respond2(self, voice_data):
         change_bot_chat(self, result)
 
     elif "weather" in voice_data:
+        self.uic.weather_widget.show()
+        self.uic.chat_bot_widget.hide()
         weather2(self)
 
     elif "heart rate" in voice_data:  # display heart rate of user
@@ -145,6 +148,7 @@ def respond2(self, voice_data):
 
     elif "set alarm" in voice_data:  # set alarm
         time = record_audio2("what is the time")
+
 
     else:
         result = "Sorry, I'm not able to help with this one."
@@ -284,17 +288,23 @@ def weather2(self):
     print(final_info)
     self.speechRunnable.speak("Here's the weather right now")
 
-    ui.city_name_label = Label(ui.window, text=f"{city_name}, {country_name}", font=("Roboto", 18), padx=10)
-    ui.temperature_label = Label(ui.window, text=f"{temp} ℃ | {temp_f} °F", font=("Roboto", 16), padx=10)
-    ui.weather_label = Label(ui.window, text=f"{condition}, {description}", font=("Roboto Light", 12), padx=10)
-    # ui.description_label = Label(ui.window, text=f"", font=("Roboto", 12), padx=10)
-    ui.humidity_label = Label(ui.window, text=f"Humidity: {humidity} %", font=("Roboto", 14), padx=10)
-    ui.wind_label = Label(ui.window, text=f"Wind: {wind} km/h", font=("Roboto", 14), padx=10)
+    self.uic.city_label.setText(f"{city_name}, {country_name}")
+    self.uic.degree_label.setText(f"{temp} ℃ | {temp_f} °F")
+    self.uic.weather_label.setText(f"{condition}, {description}")
+    self.uic.humidty_label.setText(f"Humidity: {humidity} %")
+    self.uic.wind_label.setText(f"Wind: {wind} km/h")
 
-    ui.sun_button.place(relx=0.5, rely=0.0, y=50, anchor=N)
-    ui.city_name_label.place(relx=0.5, rely=0.0, anchor=N, y=120)
-    ui.temperature_label.place(relx=0.5, rely=0.0, anchor=N, y=160)
-    ui.weather_label.place(relx=0.5, rely=0.0, anchor=N, y=195)
-    # ui.description_label.place(relx=0.5, rely=0.0, anchor=N, y=140)
-    ui.humidity_label.place(relx=0.5, rely=0.0, anchor=N, y=225)
-    ui.wind_label.place(relx=0.5, rely=0.0, anchor=N, y=255)
+    # ui.city_name_label = Label(ui.window, text=f"{city_name}, {country_name}", font=("Roboto", 18), padx=10)
+    # ui.temperature_label = Label(ui.window, text=f"{temp} ℃ | {temp_f} °F", font=("Roboto", 16), padx=10)
+    # ui.weather_label = Label(ui.window, text=f"{condition}, {description}", font=("Roboto Light", 12), padx=10)
+    # # ui.description_label = Label(ui.window, text=f"", font=("Roboto", 12), padx=10)
+    # ui.humidity_label = Label(ui.window, text=f"Humidity: {humidity} %", font=("Roboto", 14), padx=10)
+    # ui.wind_label = Label(ui.window, text=f"Wind: {wind} km/h", font=("Roboto", 14), padx=10)
+    #
+    # ui.sun_button.place(relx=0.5, rely=0.0, y=50, anchor=N)
+    # ui.city_name_label.place(relx=0.5, rely=0.0, anchor=N, y=120)
+    # ui.temperature_label.place(relx=0.5, rely=0.0, anchor=N, y=160)
+    # ui.weather_label.place(relx=0.5, rely=0.0, anchor=N, y=195)
+    # # ui.description_label.place(relx=0.5, rely=0.0, anchor=N, y=140)
+    # ui.humidity_label.place(relx=0.5, rely=0.0, anchor=N, y=225)
+    # ui.wind_label.place(relx=0.5, rely=0.0, anchor=N, y=255)
