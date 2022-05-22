@@ -25,11 +25,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>10</y>
       <width>391</width>
-
       <height>481</height>
-
      </rect>
     </property>
     <property name="font">
@@ -41,11 +39,11 @@
      <string notr="true">border:none;
 outline:none;
 display: flex;
- justify-content: center;
-background-color: #fff;</string>
+justify-content: center;
+background: #F0F0F0;</string>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -61,7 +59,8 @@ background-color: #fff;</string>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">border: none;</string>
+       <string notr="true">border: none;
+background: #F0F0F0</string>
       </property>
      </widget>
      <widget class="QWidget" name="chat_user_widget" native="true">
@@ -72,6 +71,9 @@ background-color: #fff;</string>
         <width>330</width>
         <height>51</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: #F0F0F0</string>
       </property>
       <widget class="QLabel" name="chat_user">
        <property name="geometry">
@@ -122,6 +124,9 @@ padding-right: 10px</string>
         <width>330</width>
         <height>51</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: transparent</string>
       </property>
       <widget class="QLabel" name="chat_bot">
        <property name="geometry">
@@ -174,7 +179,7 @@ padding-left: 10px</string>
       <property name="geometry">
        <rect>
         <x>80</x>
-        <y>220</y>
+        <y>30</y>
         <width>221</width>
         <height>181</height>
        </rect>
@@ -183,6 +188,9 @@ padding-left: 10px</string>
        <font>
         <family>Roboto</family>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: #F0F0F0</string>
       </property>
       <widget class="QLabel" name="label_4">
        <property name="enabled">
@@ -355,7 +363,8 @@ text-decoration: underline;</string>
        <bool>false</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true">border: 1px solid #888;</string>
+       <string notr="true">border: 1px solid #888;
+background: #fff</string>
       </property>
       <property name="text">
        <string/>
@@ -392,7 +401,8 @@ text-decoration: underline;</string>
        <bool>false</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true">border: 1px solid black;</string>
+       <string notr="true">border: 1px solid black;
+background: #fff</string>
       </property>
       <property name="placeholderText">
        <string>...</string>
@@ -424,7 +434,8 @@ text-decoration: underline;</string>
        <bool>false</bool>
       </property>
       <property name="styleSheet">
-       <string notr="true">border: 1px solid black;</string>
+       <string notr="true">border: 1px solid black;
+background: #fff</string>
       </property>
       <property name="placeholderText">
        <string>...</string>
@@ -466,7 +477,8 @@ text-decoration: underline;</string>
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">border: 1px solid #888;</string>
+       <string notr="true">border: 1px solid #888;
+background: #fff</string>
       </property>
       <property name="readOnly">
        <bool>true</bool>
@@ -555,10 +567,10 @@ background-color: #37455E;</string>
    <widget class="QPushButton" name="btn_speak">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>480</y>
-      <width>80</width>
-      <height>80</height>
+      <x>165</x>
+      <y>510</y>
+      <width>60</width>
+      <height>60</height>
      </rect>
     </property>
     <property name="layoutDirection">
@@ -580,8 +592,8 @@ background-color: #37455E;</string>
     </property>
     <property name="iconSize">
      <size>
-      <width>64</width>
-      <height>64</height>
+      <width>48</width>
+      <height>48</height>
      </size>
     </property>
    </widget>
@@ -589,7 +601,7 @@ background-color: #37455E;</string>
     <property name="geometry">
      <rect>
       <x>340</x>
-      <y>570</y>
+      <y>590</y>
       <width>41</width>
       <height>41</height>
      </rect>
@@ -619,7 +631,7 @@ background-color: #37455E;</string>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>570</y>
+      <y>590</y>
       <width>321</width>
       <height>41</height>
      </rect>

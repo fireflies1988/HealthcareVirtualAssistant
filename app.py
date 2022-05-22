@@ -10,6 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -21,25 +22,26 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.tabWidget = QtWidgets.QTabWidget(self.centralwidget)
-        self.tabWidget.setGeometry(QtCore.QRect(0, 0, 391, 481))
+        self.tabWidget.setGeometry(QtCore.QRect(0, 10, 391, 481))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         self.tabWidget.setFont(font)
         self.tabWidget.setStyleSheet("border:none;\n"
 "outline:none;\n"
 "display: flex;\n"
-" justify-content: center;\n"
-"background-color: #fff;")
+"justify-content: center;\n"
+"background: #F0F0F0;")
         self.tabWidget.setObjectName("tabWidget")
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
-
         self.chat_widget = QtWidgets.QListWidget(self.tab)
         self.chat_widget.setGeometry(QtCore.QRect(10, 20, 371, 411))
-        self.chat_widget.setStyleSheet("border: none;")
+        self.chat_widget.setStyleSheet("border: none;\n"
+"background: #F0F0F0")
         self.chat_widget.setObjectName("chat_widget")
         self.chat_user_widget = QtWidgets.QWidget(self.tab)
         self.chat_user_widget.setGeometry(QtCore.QRect(50, 40, 330, 51))
+        self.chat_user_widget.setStyleSheet("background: #F0F0F0")
         self.chat_user_widget.setObjectName("chat_user_widget")
         self.chat_user = QtWidgets.QLabel(self.chat_user_widget)
         self.chat_user.setGeometry(QtCore.QRect(30, 5, 250, 41))
@@ -56,6 +58,7 @@ class Ui_MainWindow(object):
         self.label_5.setObjectName("label_5")
         self.chat_bot_widget = QtWidgets.QWidget(self.tab)
         self.chat_bot_widget.setGeometry(QtCore.QRect(10, 110, 330, 51))
+        self.chat_bot_widget.setStyleSheet("background: transparent")
         self.chat_bot_widget.setObjectName("chat_bot_widget")
         self.chat_bot = QtWidgets.QLabel(self.chat_bot_widget)
         self.chat_bot.setGeometry(QtCore.QRect(50, 5, 250, 41))
@@ -73,10 +76,11 @@ class Ui_MainWindow(object):
         self.label_7.setObjectName("label_7")
         self.heart_widget = QtWidgets.QWidget(self.tab)
         self.heart_widget.setEnabled(True)
-        self.heart_widget.setGeometry(QtCore.QRect(80, 220, 221, 181))
+        self.heart_widget.setGeometry(QtCore.QRect(80, 30, 221, 181))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         self.heart_widget.setFont(font)
+        self.heart_widget.setStyleSheet("background: #F0F0F0")
         self.heart_widget.setObjectName("heart_widget")
         self.label_4 = QtWidgets.QLabel(self.heart_widget)
         self.label_4.setEnabled(True)
@@ -121,26 +125,27 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.tab_2, "")
         self.tab_3 = QtWidgets.QWidget()
         self.tab_3.setObjectName("tab_3")
-        self.label_5 = QtWidgets.QLabel(self.tab_3)
-        self.label_5.setGeometry(QtCore.QRect(10, 10, 391, 31))
+        self.label_51 = QtWidgets.QLabel(self.tab_3)
+        self.label_51.setGeometry(QtCore.QRect(10, 10, 391, 31))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(-1)
         font.setBold(True)
         font.setUnderline(True)
         font.setWeight(75)
-        self.label_5.setFont(font)
-        self.label_5.setStyleSheet("font-size: 16px;\n"
+        self.label_51.setFont(font)
+        self.label_51.setStyleSheet("font-size: 16px;\n"
 "text-decoration: underline;")
-        self.label_5.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_5.setObjectName("label_5")
+        self.label_51.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_51.setObjectName("label_51")
         self.label_6 = QtWidgets.QLabel(self.tab_3)
         self.label_6.setGeometry(QtCore.QRect(40, 70, 71, 16))
         self.label_6.setObjectName("label_6")
         self.lineEditPatientCode = QtWidgets.QLineEdit(self.tab_3)
         self.lineEditPatientCode.setGeometry(QtCore.QRect(120, 70, 241, 20))
         self.lineEditPatientCode.setAutoFillBackground(False)
-        self.lineEditPatientCode.setStyleSheet("border: 1px solid #888;")
+        self.lineEditPatientCode.setStyleSheet("border: 1px solid #888;\n"
+"background: #fff")
         self.lineEditPatientCode.setText("")
         self.lineEditPatientCode.setFrame(True)
         self.lineEditPatientCode.setEchoMode(QtWidgets.QLineEdit.Normal)
@@ -151,15 +156,17 @@ class Ui_MainWindow(object):
         self.lineEditName = QtWidgets.QLineEdit(self.tab_3)
         self.lineEditName.setGeometry(QtCore.QRect(120, 120, 241, 20))
         self.lineEditName.setAutoFillBackground(False)
-        self.lineEditName.setStyleSheet("border: 1px solid black;")
+        self.lineEditName.setStyleSheet("border: 1px solid black;\n"
+"background: #fff")
         self.lineEditName.setObjectName("lineEditName")
-        self.label_7 = QtWidgets.QLabel(self.tab_3)
-        self.label_7.setGeometry(QtCore.QRect(40, 120, 71, 16))
-        self.label_7.setObjectName("label_7")
+        self.label_71 = QtWidgets.QLabel(self.tab_3)
+        self.label_71.setGeometry(QtCore.QRect(40, 120, 71, 16))
+        self.label_71.setObjectName("label_71")
         self.lineEditPhone = QtWidgets.QLineEdit(self.tab_3)
         self.lineEditPhone.setGeometry(QtCore.QRect(120, 170, 241, 20))
         self.lineEditPhone.setAutoFillBackground(False)
-        self.lineEditPhone.setStyleSheet("border: 1px solid black;")
+        self.lineEditPhone.setStyleSheet("border: 1px solid black;\n"
+"background: #fff")
         self.lineEditPhone.setObjectName("lineEditPhone")
         self.label_8 = QtWidgets.QLabel(self.tab_3)
         self.label_8.setGeometry(QtCore.QRect(40, 170, 71, 16))
@@ -169,7 +176,8 @@ class Ui_MainWindow(object):
         self.label_9.setObjectName("label_9")
         self.textEditDisease = QtWidgets.QTextEdit(self.tab_3)
         self.textEditDisease.setGeometry(QtCore.QRect(120, 260, 241, 91))
-        self.textEditDisease.setStyleSheet("border: 1px solid #888;")
+        self.textEditDisease.setStyleSheet("border: 1px solid #888;\n"
+"background: #fff")
         self.textEditDisease.setReadOnly(True)
         self.textEditDisease.setObjectName("textEditDisease")
         self.label_10 = QtWidgets.QLabel(self.tab_3)
@@ -196,7 +204,7 @@ class Ui_MainWindow(object):
         self.btnUpdate.setObjectName("btnUpdate")
         self.tabWidget.addTab(self.tab_3, "")
         self.btn_speak = QtWidgets.QPushButton(self.centralwidget)
-        self.btn_speak.setGeometry(QtCore.QRect(150, 480, 80, 80))
+        self.btn_speak.setGeometry(QtCore.QRect(165, 510, 60, 60))
         self.btn_speak.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.btn_speak.setAutoFillBackground(False)
         self.btn_speak.setStyleSheet("background: transparent;\n"
@@ -205,22 +213,21 @@ class Ui_MainWindow(object):
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap("icon/blue-mic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_speak.setIcon(icon1)
-        self.btn_speak.setIconSize(QtCore.QSize(64, 64))
+        self.btn_speak.setIconSize(QtCore.QSize(48, 48))
         self.btn_speak.setObjectName("btn_speak")
         self.btn_send = QtWidgets.QPushButton(self.centralwidget)
-        self.btn_send.setGeometry(QtCore.QRect(340, 570, 41, 41))
+        self.btn_send.setGeometry(QtCore.QRect(340, 590, 41, 41))
         self.btn_send.setAutoFillBackground(False)
         self.btn_send.setStyleSheet("background: transparent;\n"
 "")
         self.btn_send.setText("")
         icon2 = QtGui.QIcon()
-
         icon2.addPixmap(QtGui.QPixmap("icon/send.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btn_send.setIcon(icon2)
         self.btn_send.setIconSize(QtCore.QSize(32, 32))
         self.btn_send.setObjectName("btn_send")
         self.ask_entry = QtWidgets.QLineEdit(self.centralwidget)
-        self.ask_entry.setGeometry(QtCore.QRect(10, 570, 321, 41))
+        self.ask_entry.setGeometry(QtCore.QRect(10, 590, 321, 41))
         self.ask_entry.setStyleSheet("background: transparent;\n"
 "border:none;\n"
 "border-raidus: 10px;")
@@ -247,11 +254,11 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Chat"))
         self.label.setText(_translate("MainWindow", "Alarm"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Alarm"))
-        self.label_5.setText(_translate("MainWindow", "Patient Information"))
+        self.label_51.setText(_translate("MainWindow", "Patient Information"))
         self.label_6.setText(_translate("MainWindow", "Patient Code:"))
         self.lineEditPatientCode.setPlaceholderText(_translate("MainWindow", "Patient code..."))
         self.lineEditName.setPlaceholderText(_translate("MainWindow", "..."))
-        self.label_7.setText(_translate("MainWindow", "Name:"))
+        self.label_71.setText(_translate("MainWindow", "Name:"))
         self.lineEditPhone.setPlaceholderText(_translate("MainWindow", "..."))
         self.label_8.setText(_translate("MainWindow", "Phone:"))
         self.label_9.setText(_translate("MainWindow", "Disease Infor:"))
@@ -263,6 +270,7 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Information"))
         self.ask_entry.setPlaceholderText(_translate("MainWindow", "Ask me"))
 
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -271,4 +279,3 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
-
