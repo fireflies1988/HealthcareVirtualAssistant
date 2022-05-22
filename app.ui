@@ -27,11 +27,9 @@
       <x>0</x>
       <y>0</y>
       <width>391</width>
-<<<<<<< HEAD
-      <height>441</height>
-=======
+
       <height>481</height>
->>>>>>> 350bfe30018905c78f52bf71a42295a79caf884a
+
      </rect>
     </property>
     <property name="font">
