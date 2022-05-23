@@ -25,6 +25,7 @@ import time
 import ui
 from main import SpeechRunnable
 
+from suggestSicks import trackSicks
 recognizer = sr.Recognizer()
 
 
@@ -155,6 +156,13 @@ def respond2(self, voice_data):
 
     elif "set alarm" in voice_data:  # set alarm
         time = record_audio2("what is the time")
+
+    elif "diagnostic" in voice_data:
+        diag = record_audio2("Please tell me your symptom")
+        print(diag)
+        diagnos = trackSicks(diag)
+        change_bot_chat(self, diagnos)
+
 
     else:
         result = "Sorry, I'm not able to help with this one."
