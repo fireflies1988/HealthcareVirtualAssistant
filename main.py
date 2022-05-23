@@ -1,5 +1,5 @@
 import sys
-import time
+from datetime import *
 
 import pyttsx3 as pyttsx3
 from PyQt5.QtWidgets import QMainWindow, QApplication
@@ -17,6 +17,7 @@ from alarm_dialog import Ui_Dialog
 import speech_recognition as sr
 import playsound
 from PyQt5 import QtCore, QtGui, QtWidgets
+from firebase_database import *
 
 global command
 command = ""
@@ -125,6 +126,11 @@ class ThreadClass2(QThread):
 
         self.heart_rate_signal.emit(f"Your average heart rate is {avg_heart_rate} bpm")
         self.spo2_signal.emit(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
+
+        # save data to firebase database
+        data = {"user": "temp", "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                "hr": avg_heart_rate, "spo2": raw_data[raw_data.__len__() - 1].spo2}
+        db.child("MeasurementHistory").push(data)
 
     def stop(self):
         print('Stopping thread', self.index)
