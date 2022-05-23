@@ -23,6 +23,7 @@ Subject: Hi doctor
 
 Patient is showing signs of poor health. their heart rate is: """
 
+
 def init_sensor():
     arduino_data = None
     try:
@@ -199,7 +200,7 @@ def measure_max30100_2(arduino_data, self):
                 raw_data.clear()
                 count += 1
 
-                if count > 5:
+                if count > 10:
                     # ui.measure_label.place_forget()
                     # ui.warning_label.place_forget()
                     # ui.heart_rate_label.place_forget()
@@ -210,7 +211,7 @@ def measure_max30100_2(arduino_data, self):
                     self.uic.heart_widget.setEnabled(False)
                     self.uic.heart_rate_label.show()
                     self.uic.heart_rate_label.setText("Place your index finger on the sensor")
-                    virtual_assistant.speak("Place your index finger on the sensor")
+                    # self.speechRunnable.speak("Place your index finger on the sensor")
                     # thread = threading.Thread(
                     #     target=virtual_assistant.speak("Place your index finger on sensor")).start()
                     count = 0
@@ -278,8 +279,8 @@ def measure_max30100_2(arduino_data, self):
     self.uic.heart_rate_label.setText(f"Your average heart rate is {avg_heart_rate} bpm")
     self.uic.spo2_label.setText(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
 
-    virtual_assistant.speak(f"Your average heart rate is {avg_heart_rate} bpm")
-    virtual_assistant.speak(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
+    # self.speechRunnable.speak(f"Your average heart rate is {avg_heart_rate} bpm")
+    # self.speechRunnable.speak(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
 
 
 def measure_max30102(arduino_data):

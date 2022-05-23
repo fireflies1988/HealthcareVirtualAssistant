@@ -10,6 +10,7 @@ import playsound
 import os
 import random
 
+from PyQt5.QtCore import QRunnable, QThread, pyqtSignal
 from geopy import Nominatim
 from gtts import gTTS
 import pyttsx3
@@ -21,6 +22,7 @@ import requests
 import pyjokes
 import time
 import ui
+from main import SpeechRunnable
 
 recognizer = sr.Recognizer()
 
@@ -69,6 +71,22 @@ def change_bot_chat(self, result):
     self.speechRunnable.speak(result)
 
 
+class Worker(QThread):
+    list_of_dict_signals = pyqtSignal(list)
+    str_signal = pyqtSignal(str)
+
+    def __init__(self, parent=None):
+        QThread.__init__(self, parent)
+        self.running = False
+
+    def run(self):
+        self.running = True
+        while self.running:
+            info = self.check_info()
+            self.list_of_dict_signals.emit(info)
+            self.str_signal.emit("Requesting info")
+
+
 def respond2(self, voice_data):
     # show the chat widget
     self.uic.chat_user_widget.show()
@@ -106,12 +124,12 @@ def respond2(self, voice_data):
         weather2(self)
 
     elif "heart rate" in voice_data:  # display heart rate of user
-        arduino_data = sensor.init_sensor()
         self.uic.chat_user_widget.hide()
         self.uic.chat_bot_widget.hide()
         self.uic.heart_widget.show()
         self.uic.spo2_label.hide()
 
+        arduino_data = sensor.init_sensor()
         if arduino_data is None:
             self.uic.heart_widget.setEnabled(False)
             self.uic.heart_rate_label.setText("This function is not available!")
@@ -149,7 +167,6 @@ def respond2(self, voice_data):
     elif "set alarm" in voice_data:  # set alarm
         time = record_audio2("what is the time")
 
-
     else:
         result = "Sorry, I'm not able to help with this one."
         change_bot_chat(self, result)
@@ -158,6 +175,7 @@ def respond2(self, voice_data):
 def introduce2(self):
     self.uic.chat_bot.setText("Hi, I'm your healthcare virtual assistant. \nWhat can I do for you?")
     playsound.playsound('sound/cortana_sound_effect.mp3')
+    self.speechRunnable = SpeechRunnable()
     self.speechRunnable.speak("Hi, I'm your healthcare virtual assistant. What can I do for you?")
 
 
