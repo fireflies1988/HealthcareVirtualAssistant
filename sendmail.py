@@ -6,10 +6,10 @@ sender_email = "n18dccn237java@gmail.com"  # Enter your address nqubjcnsenjyrppp
 receiver_email = "thienthien20221@gmail.com"  # Enter receiver addresspassword
 password="dqocoxgxjylgooqg"
 #password = input("Type your password and press enter: ")
-message = """\
-Subject: Hi doctor
-
-Patient is showing signs of poor health. their heart rate is: """
+# message = """\
+# Subject: Hi doctor
+#
+# Patient is showing signs of poor health. their heart rate is: """
 
 
 
@@ -21,6 +21,6 @@ def sendemail(port, sender_email, receiver_email, password,message):
         server.sendmail(sender_email, receiver_email, message)
 
 
-# Run
-sendemail(port, sender_email, receiver_email, password, message)
-print("Status: Exit")
+# # Run
+# sendemail(port, sender_email, receiver_email, password, message)
+# print("Status: Exit")
