@@ -1,7 +1,7 @@
 import sys
 import time
 
-import pyttsx3
+import pyttsx3 as pyttsx3
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
