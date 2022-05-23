@@ -2,6 +2,7 @@ import json
 import threading
 from pprint import pprint
 from tkinter import *
+from virtual_assistant import speak
 
 import geocoder
 import speech_recognition as sr
@@ -32,30 +33,30 @@ recognizer = sr.Recognizer()
 # engine.setProperty('voice', voices[1].id)  # voices[0]: male voice, voices[1]: female voice
 
 
-def record_audio2(self, ask=False):
+def record_audio2(ask=False):
     with sr.Microphone() as source:
         if ask:
-            self.speechRunnable.speak(ask)
+            speak(ask)
         recognizer.adjust_for_ambient_noise(source, duration=1)
         audio = recognizer.listen(source)  # lúc đang nghe thì tất cả các luồng sẽ dừng
         try:
             voice_data = recognizer.recognize_google(audio, language="en-US")
         except sr.UnknownValueError:
-            self.speechRunnable.speak("Sorry, I did not get that.")
+            speak("Sorry, I did not get that.")
             raise sr.UnknownValueError
         except sr.RequestError:
-            self.speechRunnable.speak("Sorry, my speech service is down.")
+            speak("Sorry, my speech service is down.")
             raise sr.RequestError
         return voice_data
 
 
-def listen2():
+def listen2(self):
     playsound.playsound('sound/data_2.wav')
     global isListening
     global command
     try:
         command = record_audio2()
-        respond2(command)
+        respond2(self, command)
         isListening = not isListening
         # speakButton.config(image=blueEdgeMicIcon)
     except sr.UnknownValueError:
@@ -96,7 +97,12 @@ def respond2(self, voice_data):
 
     voice_data = voice_data.lower()
     print(voice_data)
-    if "what is your name" in voice_data or "your name" in voice_data:
+
+    if "hello" in voice_data or "hi" in voice_data:
+        result = "Ít's nice to see you"
+        change_bot_chat(result)
+
+    elif "what is your name" in voice_data or "your name" in voice_data:
         result = "My name is Zira"
         change_bot_chat(self, result)
 
