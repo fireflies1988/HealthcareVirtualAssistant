@@ -71,23 +71,6 @@ def change_bot_chat(self, result):
     self.uic.chat_bot.setText(result)
     self.speechRunnable.speak(result)
 
-
-class Worker(QThread):
-    list_of_dict_signals = pyqtSignal(list)
-    str_signal = pyqtSignal(str)
-
-    def __init__(self, parent=None):
-        QThread.__init__(self, parent)
-        self.running = False
-
-    def run(self):
-        self.running = True
-        while self.running:
-            info = self.check_info()
-            self.list_of_dict_signals.emit(info)
-            self.str_signal.emit("Requesting info")
-
-
 def respond2(self, voice_data):
     # show the chat widget
     self.uic.chat_user_widget.show()
@@ -100,7 +83,7 @@ def respond2(self, voice_data):
 
     if "hello" in voice_data or "hi" in voice_data:
         result = "Ít's nice to see you"
-        change_bot_chat(result)
+        change_bot_chat(self, result)
 
     elif "what is your name" in voice_data or "your name" in voice_data:
         result = "My name is Zira"

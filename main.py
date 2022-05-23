@@ -15,6 +15,8 @@ from virtual_assistant import speak
 from virtual_assistant_2 import *
 from alarm_dialog import Ui_Dialog
 import speech_recognition as sr
+import playsound
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 global command
 command = ""
@@ -162,6 +164,19 @@ class ThreadClass3(QThread):
         self.terminate()
 
 
+def changBtnSpeakIcon(self, type=True):
+    if type:
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("icon/blue-mic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.uic.btn_speak.setIcon(icon1)
+        self.uic.btn_speak.setIconSize(QtCore.QSize(48, 48))
+    else:
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("icon/voice-wave.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.uic.btn_speak.setIcon(icon1)
+        self.uic.btn_speak.setIconSize(QtCore.QSize(48, 48))
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -263,22 +278,25 @@ class MainWindow(QMainWindow):
         #     isListening = not isListening
         # threading.Thread(target=change_speak_button_status).start()
         # change_speak_button_status()
-        self.speechRunnable = SpeechRunnable()
+        playsound.playsound('sound/data_2.wav')
+        changBtnSpeakIcon(self=self, type=False)
         self.thread[3] = ThreadClass3(index=1)
         self.thread[3].start()
         self.thread[3].voice_data_signal.connect(self.updateUI)
         self.thread[3].error_signal.connect(self.errorWhileHearing)
-
         # threading.Thread(target=listen2(self)).start()
 
     def updateUI(self, voice_data_signal):
         self.uic.chat_user.setText(voice_data_signal)
+        self.speechRunnable = SpeechRunnable()
         respond2(self, voice_data_signal)
+        changBtnSpeakIcon(self=self, type=True)
         # speak(voice_data_signal)
 
     def errorWhileHearing(self, error_signal):
         self.uic.chat_user.setText("...")
         self.uic.chat_bot.setText(error_signal)
+        changBtnSpeakIcon(self=self, type=True)
 
     def on_click_send(self):
         text = ""
