@@ -25,9 +25,9 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>20</y>
+      <y>0</y>
       <width>391</width>
-      <height>481</height>
+      <height>491</height>
      </rect>
     </property>
     <property name="font">
@@ -35,11 +35,12 @@
       <family>Roboto</family>
      </font>
     </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
     <property name="styleSheet">
      <string notr="true">border:none;
 outline:none;
-display: flex;
-justify-content: center;
 background: #F0F0F0;</string>
     </property>
     <property name="currentIndex">
@@ -166,7 +167,7 @@ padding-left: 10px</string>
        <rect>
         <x>80</x>
         <y>40</y>
-        <width>221</width>
+        <width>220</width>
         <height>181</height>
        </rect>
       </property>
@@ -176,7 +177,8 @@ padding-left: 10px</string>
        </font>
       </property>
       <property name="styleSheet">
-       <string notr="true">background: #F0F0F0</string>
+       <string notr="true">background: #fff;
+border-radius:10px</string>
       </property>
       <widget class="QLabel" name="label_4">
        <property name="enabled">
@@ -184,9 +186,9 @@ padding-left: 10px</string>
        </property>
        <property name="geometry">
         <rect>
-         <x>80</x>
+         <x>0</x>
          <y>10</y>
-         <width>71</width>
+         <width>220</width>
          <height>71</height>
         </rect>
        </property>
@@ -206,14 +208,17 @@ padding-left: 10px</string>
          <x>0</x>
          <y>80</y>
          <width>221</width>
-         <height>20</height>
+         <height>41</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <family>Roboto</family>
+         <family>Roboto Medium</family>
          <pointsize>10</pointsize>
         </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
        </property>
        <property name="text">
         <string>Your heart rate is 79bpm </string>
@@ -221,19 +226,22 @@ padding-left: 10px</string>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
       </widget>
       <widget class="QLabel" name="spo2_label">
        <property name="geometry">
         <rect>
          <x>0</x>
-         <y>110</y>
+         <y>113</y>
          <width>221</width>
          <height>20</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <family>Roboto</family>
+         <family>Roboto Medium</family>
          <pointsize>10</pointsize>
         </font>
        </property>
@@ -252,9 +260,9 @@ padding-left: 10px</string>
       <property name="geometry">
        <rect>
         <x>80</x>
-        <y>120</y>
-        <width>221</width>
-        <height>221</height>
+        <y>100</y>
+        <width>220</width>
+        <height>220</height>
        </rect>
       </property>
       <property name="font">
@@ -398,6 +406,35 @@ border-radius:10px</string>
         <set>Qt::AlignCenter</set>
        </property>
       </widget>
+     </widget>
+     <widget class="QPushButton" name="btn_active">
+      <property name="geometry">
+       <rect>
+        <x>260</x>
+        <y>400</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: rgb(255, 255, 255)</string>
+      </property>
+      <property name="text">
+       <string>PushButton</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="screen">
+      <property name="geometry">
+       <rect>
+        <x>50</x>
+        <y>380</y>
+        <width>104</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: rgb(255, 255, 255)</string>
+      </property>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
@@ -708,7 +745,7 @@ background-color: #37455E;</string>
     <property name="geometry">
      <rect>
       <x>165</x>
-      <y>510</y>
+      <y>500</y>
       <width>60</width>
       <height>60</height>
      </rect>
@@ -741,7 +778,7 @@ background-color: #37455E;</string>
     <property name="geometry">
      <rect>
       <x>340</x>
-      <y>590</y>
+      <y>570</y>
       <width>41</width>
       <height>41</height>
      </rect>
@@ -771,7 +808,7 @@ background-color: #37455E;</string>
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>590</y>
+      <y>570</y>
       <width>321</width>
       <height>41</height>
      </rect>

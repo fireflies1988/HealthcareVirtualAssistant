@@ -1,12 +1,17 @@
 import sys
+import time
 
+import pyttsx3
 from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
+from SensorData import SensorData
 from app import Ui_MainWindow
 # from virtual_assistant import introduce
+from sensor import read_sensor
+from virtual_assistant import speak
 from virtual_assistant_2 import *
 from alarm_dialog import Ui_Dialog
 
@@ -16,7 +21,7 @@ command = ""
 
 class SpeechRunnable(QRunnable):
     def __init__(self):
-        QRunnable.__init__(self)
+        super().__init__()
         self.chat_speech = None
         self.engine = pyttsx3.init()
         voices = self.engine.getProperty('voices')
@@ -25,8 +30,12 @@ class SpeechRunnable(QRunnable):
     def run(self):
         self.engine.say(self.chat_speech)
         self.engine.runAndWait()
-        # self.engine.endLoop()  # add this line
-        # self.engine.stop()
+
+        if self.engine._inLoop:
+            self.engine.endLoop()
+
+    # self.engine.endLoop()  # add this line
+    # self.engine.stop()
 
     def speak(self, text):
         self.chat_speech = text
@@ -36,10 +45,97 @@ class SpeechRunnable(QRunnable):
         self.engine.stop()
 
 
-class MainWindow:
+class ThreadClass(QThread):
+    signal = pyqtSignal(str)
+
+    def __init__(self, index=0):
+        super().__init__()
+        self.index = index
+
+    def run(self):
+        print('Starting thread...', self.index)
+        counter = 0
+        while True:
+            counter += 1
+            print(counter)
+            if counter == 10:
+                counter = 0
+            self.signal.emit(str(counter))
+            time.sleep(1)
+
+    def stop(self):
+        print('Stopping thread', self.index)
+        self.terminate()
+
+
+class ThreadClass2(QThread):
+    error_signal = pyqtSignal(str)
+    measuring_signal = pyqtSignal(str)
+    heart_rate_signal = pyqtSignal(str)
+    spo2_signal = pyqtSignal(str)
+
+    def __init__(self, index=0, arduino_data=None):
+        super().__init__()
+        self.index = index
+        self.arduino_data = arduino_data
+
+    def run(self):
+        raw_data = []
+        flag = True
+        timeout = None
+        count = 0
+
+        while flag:
+            data_from_sensor = read_sensor(self.arduino_data)
+            print(data_from_sensor)
+            data = data_from_sensor.split(",")
+            if data.__len__() > 1:  # chỉ lấy dữ liệu có đầy đủ cả hai phần tử
+                if data[0] == "0" or data[1] == "0":
+                    timeout = None
+                    raw_data.clear()
+                    count += 1
+
+                    if count > 5:
+                        self.error_signal.emit("Place your index finger on the sensor")
+                        count = 0
+                    continue
+
+                if timeout is None:
+                    timeout = time.time() + 5
+
+                if time.time() > timeout:
+                    flag = False
+
+                else:  # khi mọi thứ đã hoàn hảo
+                    sensor_data = SensorData(heart_rate=data[0], spo2=data[1])
+                    raw_data.append(sensor_data)
+                    self.measuring_signal.emit("Measuring")
+
+            time.sleep(1)
+
+        # tính toán nhịp tim trung bình
+        sum_heart_rate = 0
+        for d in raw_data:
+            sum_heart_rate += int(d.heart_rate)
+
+        avg_heart_rate = int(sum_heart_rate / raw_data.__len__())
+
+        self.heart_rate_signal.emit(f"Your average heart rate is {avg_heart_rate} bpm")
+        self.spo2_signal.emit(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
+
+    def stop(self):
+        print('Stopping thread', self.index)
+        self.arduino_data.close()
+        self.terminate()
+
+
+class MainWindow(QMainWindow):
     def __init__(self):
+        super().__init__()
+        # the way app working
         self.main_win = QMainWindow()
         self.uic = Ui_MainWindow()
+        self.thread = {}
         self.uic.setupUi(self.main_win)
         self.uic.btn_speak.clicked.connect(self.on_click_speak_button)
         self.uic.btnUpdate.clicked.connect(self.updatePatient)
@@ -51,12 +147,65 @@ class MainWindow:
         self.uic.lineEditPhone.setText("0158181858")
         self.uic.textEditDisease.setText("ooooo\naaaaaa")
 
+        self.uic.btn_active.hide()
+        self.uic.screen.hide()
         self.uic.btn_send.clicked.connect(self.on_click_send)
         self.uic.heart_widget.hide()
         self.uic.weather_widget.hide()
-        self.speechRunnable = None
         self.speechRunnable = SpeechRunnable()
+
+        self.uic.btn_active.clicked.connect(self.start_worker_2)
         threading.Thread(target=introduce2, args={self}, daemon=True).start()
+
+    def start_worker_2(self):
+        self.uic.chat_user_widget.hide()
+        self.uic.chat_bot_widget.hide()
+        self.uic.heart_widget.show()
+        self.uic.spo2_label.hide()
+
+        self.speechRunnable = SpeechRunnable()
+        arduino_data = sensor.init_sensor()
+        if arduino_data is None:
+            self.uic.heart_widget.setEnabled(False)
+            self.uic.heart_rate_label.setText("This function is not available!")
+            self.speechRunnable.speak("This function is not available!")
+        else:
+            self.uic.heart_rate_label.setText("Place your index finger on the sensor with steady pressure.")
+            self.speechRunnable.speak("Place your index finger on the sensor with steady pressure.")
+            self.thread[2] = ThreadClass2(index=1, arduino_data=arduino_data)
+            self.thread[2].start()
+            self.thread[2].error_signal.connect(self.errorWhileMeasuring)
+            self.thread[2].measuring_signal.connect(self.measuring)
+            self.thread[2].heart_rate_signal.connect(self.showHeartRate)
+            self.thread[2].spo2_signal.connect(self.showSpo2)
+
+    def errorWhileMeasuring(self, error_signal):
+        self.uic.heart_widget.setEnabled(False)
+        self.uic.heart_rate_label.show()
+        self.uic.heart_rate_label.setText(error_signal)
+        self.speechRunnable = SpeechRunnable()
+        self.speechRunnable.speak(error_signal)
+
+    def measuring(self, measuring_signal):
+        self.uic.heart_widget.setEnabled(True)
+        self.uic.heart_rate_label.show()
+        self.uic.heart_rate_label.setText(measuring_signal)
+        self.speechRunnable = SpeechRunnable()
+
+    def showHeartRate(self, heart_rate_signal):
+        self.uic.heart_widget.setEnabled(True)
+        self.uic.heart_rate_label.show()
+        self.uic.heart_rate_label.setText(heart_rate_signal)
+        self.uic.screen.setText(heart_rate_signal)
+        speak(heart_rate_signal)
+
+    def showSpo2(self, spo2_signal):
+        self.uic.heart_widget.setEnabled(True)
+        self.uic.spo2_label.show()
+        self.uic.spo2_label.setText(spo2_signal)
+        self.uic.screen.setText(spo2_signal)
+        speak(spo2_signal)
+        self.thread[2].stop()
 
     def show(self):
         self.main_win.show()
@@ -94,6 +243,59 @@ class MainWindow:
             # print(text)
 
         # threading.Thread(target=respond2(self, text), daemon=True).start()
+
+
+def measure_max30100_2(arduino_data, self):
+    raw_data = []
+    flag = True
+    timeout = None
+    count = 0
+
+    while flag:
+        data_from_sensor = read_sensor(arduino_data)
+        print(data_from_sensor)
+        data = data_from_sensor.split(",")
+        if data.__len__() > 1:  # chỉ lấy dữ liệu có đầy đủ cả hai phần tử
+            if data[0] == "0" or data[1] == "0":
+                timeout = None
+                raw_data.clear()
+                count += 1
+
+                if count > 5:
+                    # self.uic.heart_widget.setEnabled(False)
+                    # self.uic.heart_rate_label.show()
+                    # self.uic.heart_rate_label.setText("Place your index finger on the sensor")
+                    count = 0
+                continue
+
+            if timeout is None:
+                timeout = time.time() + 20
+
+            if time.time() > timeout:
+                flag = False
+
+            else:  # khi mọi thứ đã hoàn hảo
+                sensor_data = SensorData(heart_rate=data[0], spo2=data[1])
+                raw_data.append(sensor_data)
+
+                self.uic.heart_widget.setEnabled(True)
+                self.uic.heart_rate_label.show()
+                self.uic.heart_rate_label.setText("Measuring")
+
+        time.sleep(1)
+
+    # tính toán nhịp tim trung bình
+    sum_heart_rate = 0
+    for d in raw_data:
+        sum_heart_rate += int(d.heart_rate)
+
+    avg_heart_rate = int(sum_heart_rate / raw_data.__len__())
+
+    self.uic.heart_widget.setEnabled(True)
+    self.uic.heart_rate_label.show()
+    self.uic.spo2_label.show()
+    self.uic.heart_rate_label.setText(f"Your average heart rate is {avg_heart_rate} bpm")
+    self.uic.spo2_label.setText(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
 
 
 if __name__ == "__main__":
