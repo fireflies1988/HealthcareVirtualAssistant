@@ -15,6 +15,9 @@ class Alarm(object):
         self.is_once = is_once
         self.message = message
 
+    def __get_time__(self):
+        return str(self.hour) + ":" + str(self.minute)
+
 
 def writeFile(alarm_list):
     # alarm_list = []
