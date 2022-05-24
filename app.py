@@ -373,7 +373,7 @@ class Ui_MainWindow(object):
         self.label_10.setText(_translate("MainWindow", "Sex:"))
         self.radioButtonMale.setText(_translate("MainWindow", "Male"))
         self.radioButtonFemale.setText(_translate("MainWindow", "Female"))
-        self.btnUpdate.setText(_translate("MainWindow", "Update"))
+        self.btnUpdate.setText(_translate("MainWindow", "Save"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Information"))
         self.label_2.setText(_translate("MainWindow", "Your measurement history"))
         __sortingEnabled = self.listWidget_history.isSortingEnabled()
