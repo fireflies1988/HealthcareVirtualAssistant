@@ -308,6 +308,7 @@ class ThreadClass5(QThread):
             current_time = datetime.now()
             now = current_time.strftime("%H:%M")
             date = current_time.strftime("%d/%m/%Y")
+            print("index: ", self.index)
             print("The Set Date is:", date)
             print("Thời gian hiện tại", now)
             alarm_time = datetime.strptime(self.alarm.__get_time__(), '%H:%M')
@@ -380,6 +381,7 @@ class MainWindow(QMainWindow):
         self.main_win = QMainWindow()
         self.uic = Ui_MainWindow()
         self.thread = {}
+        self.alarm_thread = {}
         self.uic.setupUi(self.main_win)
         self.is_btn_speak_clicked = False
         self.is_speaking = False
@@ -421,6 +423,12 @@ class MainWindow(QMainWindow):
                                           "QListWidget::item:selected {"
                                           "background-color: #DDD;"
                                           "}")
+        self.uic.stop_all.clicked.connect(self.cancel_all_alarm)
+
+    def cancel_all_alarm(self):
+        print()
+        # for th in self.alarm_thread:
+        #     a
 
     def fill_alarm_list(self):
         self.uic.alarm_list.clear()
@@ -432,11 +440,9 @@ class MainWindow(QMainWindow):
             row = AlarmItem(parent=self, alarm=alarm)
             item.setSizeHint(row.minimumSizeHint())
             self.uic.alarm_list.setItemWidget(item, row)
-            self.thread[5] = ThreadClass5(index=i, alarm=alarm)
-            self.thread[5].start()
-            self.thread[5].open_prompt_signal.connect(self.open_prompt)
-            promptDialog = PromptDialog(alarm=alarm)
-            promptDialog.exec_()
+            self.alarm_thread[i] = ThreadClass5(index=i, alarm=alarm)
+            self.alarm_thread[i].start()
+            self.alarm_thread[i].open_prompt_signal.connect(self.open_prompt)
             i += 1
 
     def open_prompt(self, open_prompt_signal):
@@ -641,11 +647,14 @@ class SignInForm(QMainWindow):
             self.uic.invalid.setVisible(True)
 
     def goto_create(self):
-        signUpForm = SignUpForm()
-        signUpForm.show()
+        self.showSignUpForm()
+
+    def showSignUpForm(self):
         self.main_win.close()
-        # widget.addWidget(createAcc)
-        # widget.setCurrentIndex(widget.currentIndex() + 1)
+        self.sub_win = QMainWindow()
+        self.uic1 = signup_form.Ui_MainWindow()
+        self.uic1.setupUi(self.sub_win)
+        self.sub_win.show()
 
     def show(self):
         self.main_win.show()
@@ -668,27 +677,36 @@ class SignUpForm(QMainWindow):
             user_password = self.uic.password.text()
             try:
                 account.auth.create_user_with_email_and_password(email, user_password)
-                login = Login()
-                login.exec_()
-                self.main_win.close()
+                self.showSignInForm()
                 # widget.addWidget(login)
                 # widget.setCurrentIndex(widget.currentIndex() + 1)
             except:
                 self.uic.invalid.setVisible(True)
 
+    def showSignInForm(self):
+        self.main_win.close()
+        self.sub_win = QMainWindow()
+        self.uic1 = signin_form.Ui_MainWindow()
+        self.uic1.setupUi(self.sub_win)
+        self.sub_win.show()
+
     def show(self):
         self.main_win.show()
 
 
-if __name__ == "__main__":
+def main():
     app = QApplication(sys.argv)
-    main_win = MainWindow()
-    main_win.show()
-    # signInForm = SignInForm()
-    # signInForm.show()
+    # main_win = MainWindow()
+    # main_win.show()
+    signInForm = SignInForm()
+    signInForm.show()
     # main_win = MainWindow()
     # main_win.show()
     sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    main()
 
 # if __name__ == "__main__":
 #     window.after(500, introduce)  # after mainloop() 500ms, call introduce()
