@@ -223,7 +223,7 @@ class Ui_MainWindow(object):
         self.lineEditPatientCode.setFrame(True)
         self.lineEditPatientCode.setEchoMode(QtWidgets.QLineEdit.Normal)
         self.lineEditPatientCode.setDragEnabled(False)
-        self.lineEditPatientCode.setReadOnly(True)
+        self.lineEditPatientCode.setReadOnly(False)
         self.lineEditPatientCode.setClearButtonEnabled(False)
         self.lineEditPatientCode.setObjectName("lineEditPatientCode")
         self.lineEditName = QtWidgets.QLineEdit(self.tab_3)
@@ -251,7 +251,7 @@ class Ui_MainWindow(object):
         self.textEditDisease.setGeometry(QtCore.QRect(115, 260, 241, 91))
         self.textEditDisease.setStyleSheet("border: 1px solid #888;\n"
 "background: #fff")
-        self.textEditDisease.setReadOnly(True)
+        self.textEditDisease.setReadOnly(False)
         self.textEditDisease.setObjectName("textEditDisease")
         self.label_10 = QtWidgets.QLabel(self.tab_3)
         self.label_10.setGeometry(QtCore.QRect(35, 210, 71, 16))
