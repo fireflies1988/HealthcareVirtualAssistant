@@ -10,10 +10,13 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 import ReadWrite
+import account
 import firebase_database
+import signin_form
+import signup_form
 from ReadWrite import Alarm
 from SensorData import SensorData
-from app import Ui_MainWindow
+from account import Login
 # from virtual_assistant import introduce
 from sensor import read_sensor
 from virtual_assistant import speak
@@ -23,6 +26,7 @@ import speech_recognition as sr
 import playsound
 from PyQt5 import QtCore, QtGui, QtWidgets
 from firebase_database import *
+from app import Ui_MainWindow
 import pyrebase
 
 global command
@@ -33,7 +37,7 @@ from sendmail import sendemail
 port = 465  # For SSL
 smtp_server = "smtp.gmail.com"
 sender_email = "n18dccn237java@gmail.com"  # Enter your address nqubjcnsenjyrppp
-receiver_email = "thienthien20221@gmail.com"  # Enter receiver addresspassword
+receiver_email = "n18dccn146@gmail.com"  # Enter receiver addresspassword
 password = "dqocoxgxjylgooqg"
 # password = input("Type your password and press enter: ")
 message = """\
@@ -550,10 +554,78 @@ class MainWindow(QMainWindow):
         self.speechRunnable.speak("Hi, I'm your healthcare virtual assistant. What can I do for you?")
 
 
+class SignInForm(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.main_win = QMainWindow()
+        self.uic = signin_form.Ui_MainWindow()
+        self.uic.setupUi(self.main_win)
+        self.uic.password.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.uic.loginbutton.clicked.connect(self.login_function)
+        self.uic.createaccbutton.clicked.connect(self.goto_create)
+        self.uic.invalid.setVisible(False)
+
+    def login_function(self):
+        email = self.uic.email.text()
+        user_password = self.uic.password.text()
+        try:
+            ref = account.auth.sign_in_with_email_and_password(email, user_password)
+            print(ref['localId'])
+            mainWindow = MainWindow()
+            mainWindow.show()
+            self.main_win.close()
+
+        except Exception as e:
+            self.uic.invalid.setVisible(True)
+
+    def goto_create(self):
+        signUpForm = SignUpForm()
+        signUpForm.show()
+        self.main_win.close()
+        # widget.addWidget(createAcc)
+        # widget.setCurrentIndex(widget.currentIndex() + 1)
+
+    def show(self):
+        self.main_win.show()
+
+
+class SignUpForm(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.main_win = QMainWindow()
+        self.uic = signup_form.Ui_MainWindow()
+        self.uic.setupUi(self.main_win)
+        self.uic.signupbutton.clicked.connect(self.create_acc_function)
+        self.uic.password.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.uic.confirmpass.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.uic.invalid.setVisible(False)
+
+    def create_acc_function(self):
+        email = self.uic.email.text()
+        if self.uic.password.text() == self.uic.confirmpass.text():
+            user_password = self.uic.password.text()
+            try:
+                account.auth.create_user_with_email_and_password(email, user_password)
+                login = Login()
+                login.exec_()
+                self.main_win.close()
+                # widget.addWidget(login)
+                # widget.setCurrentIndex(widget.currentIndex() + 1)
+            except:
+                self.uic.invalid.setVisible(True)
+
+    def show(self):
+        self.main_win.show()
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    main_win = MainWindow()
-    main_win.show()
+    # main_win = MainWindow()
+    # main_win.show()
+    signInForm = SignInForm()
+    signInForm.show()
+    # main_win = MainWindow()
+    # main_win.show()
     sys.exit(app.exec())
 
 # if __name__ == "__main__":
