@@ -162,7 +162,7 @@ class ThreadClass2(QThread):
             message1 = client.messages.create(
                 body=message+ data,
                 from_='+18507905695',
-                to='+84967903498'
+                to='+84386201456'
             )
             print(message1.body)
 
