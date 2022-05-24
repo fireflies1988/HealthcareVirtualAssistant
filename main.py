@@ -24,6 +24,7 @@ import playsound
 from PyQt5 import QtCore, QtGui, QtWidgets
 from firebase_database import *
 import pyrebase
+
 global command
 command = ""
 
@@ -41,7 +42,6 @@ Subject: Hi doctor
 Patient is showing signs of poor health. """
 
 from twilio.rest import Client
-
 
 # Find your Account SID and Auth Token at twilio.com/console
 # and set the environment variables. See http://twil.io/secure
@@ -355,7 +355,7 @@ class MainWindow(QMainWindow):
             lambda: self.speak("Hi, I'm your healthcare virtual assistant. \nWhat can I do for you?"))
         self.uic.btn_new_alarm.clicked.connect(self.on_click_btn_new_alarm)
         self.alarm_dialog = None
-        threading.Thread(target=introduce2, args={self}, daemon=True).start()
+        threading.Thread(target=self.introduce2, daemon=True).start()
         self.uic.alarm_list.setStyleSheet("QListWidget::item {"
                                           "border:none;"
                                           "background-color: white;"
@@ -465,7 +465,7 @@ class MainWindow(QMainWindow):
         patient = database.child("PatientInformation").child(code).get()
         print(patient)
 
-        if patient.val()!="" or patient.val()!= None:
+        if patient.val() != "" or patient.val() != None:
             print("exist")
             database.child("PatientInformation").child(code).update(data)
         else:
