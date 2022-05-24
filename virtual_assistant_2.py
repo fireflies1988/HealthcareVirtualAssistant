@@ -2,6 +2,7 @@ import json
 import threading
 from pprint import pprint
 from tkinter import *
+from virtual_assistant import speak
 
 import geocoder
 import speech_recognition as sr
@@ -24,6 +25,7 @@ import time
 import ui
 from main import SpeechRunnable
 
+from suggestSicks import trackSicks
 recognizer = sr.Recognizer()
 
 
@@ -32,30 +34,30 @@ recognizer = sr.Recognizer()
 # engine.setProperty('voice', voices[1].id)  # voices[0]: male voice, voices[1]: female voice
 
 
-def record_audio2(self, ask=False):
+def record_audio2(ask=False):
     with sr.Microphone() as source:
         if ask:
-            self.speechRunnable.speak(ask)
+            speak(ask)
         recognizer.adjust_for_ambient_noise(source, duration=1)
         audio = recognizer.listen(source)  # lúc đang nghe thì tất cả các luồng sẽ dừng
         try:
             voice_data = recognizer.recognize_google(audio, language="en-US")
         except sr.UnknownValueError:
-            self.speechRunnable.speak("Sorry, I did not get that.")
+            speak("Sorry, I did not get that.")
             raise sr.UnknownValueError
         except sr.RequestError:
-            self.speechRunnable.speak("Sorry, my speech service is down.")
+            speak("Sorry, my speech service is down.")
             raise sr.RequestError
         return voice_data
 
 
-def listen2():
+def listen2(self):
     playsound.playsound('sound/data_2.wav')
     global isListening
     global command
     try:
         command = record_audio2()
-        respond2(command)
+        respond2(self, command)
         isListening = not isListening
         # speakButton.config(image=blueEdgeMicIcon)
     except sr.UnknownValueError:
@@ -70,23 +72,6 @@ def change_bot_chat(self, result):
     self.uic.chat_bot.setText(result)
     self.speechRunnable.speak(result)
 
-
-class Worker(QThread):
-    list_of_dict_signals = pyqtSignal(list)
-    str_signal = pyqtSignal(str)
-
-    def __init__(self, parent=None):
-        QThread.__init__(self, parent)
-        self.running = False
-
-    def run(self):
-        self.running = True
-        while self.running:
-            info = self.check_info()
-            self.list_of_dict_signals.emit(info)
-            self.str_signal.emit("Requesting info")
-
-
 def respond2(self, voice_data):
     # show the chat widget
     self.uic.chat_user_widget.show()
@@ -96,7 +81,12 @@ def respond2(self, voice_data):
 
     voice_data = voice_data.lower()
     print(voice_data)
-    if "what is your name" in voice_data or "your name" in voice_data:
+
+    if "hello" in voice_data or "hi" in voice_data:
+        result = "Ít's nice to see you"
+        change_bot_chat(self, result)
+
+    elif "what is your name" in voice_data or "your name" in voice_data:
         result = "My name is Zira"
         change_bot_chat(self, result)
 
@@ -166,6 +156,13 @@ def respond2(self, voice_data):
 
     elif "set alarm" in voice_data:  # set alarm
         time = record_audio2("what is the time")
+
+    elif "diagnostic" in voice_data:
+        diag = record_audio2("Please tell me your symptom")
+        print(diag)
+        diagnos = trackSicks(diag)
+        change_bot_chat(self, diagnos)
+
 
     else:
         result = "Sorry, I'm not able to help with this one."

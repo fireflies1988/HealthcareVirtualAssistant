@@ -44,7 +44,7 @@ outline:none;
 background: #F0F0F0;</string>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -480,6 +480,39 @@ padding: 10px</string>
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
+     <widget class="QPushButton" name="btn_new_alarm">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>35</y>
+        <width>31</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background: transparent;
+</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset>
+        <normaloff>icon/plus.png</normaloff>icon/plus.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>48</width>
+        <height>48</height>
+       </size>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_3">
      <attribute name="title">
@@ -738,6 +771,68 @@ background-color: #37455E;</string>
       <property name="text">
        <string>Update</string>
       </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_4">
+     <attribute name="title">
+      <string>History</string>
+     </attribute>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>241</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Your measurement history</string>
+      </property>
+     </widget>
+     <widget class="QListWidget" name="listWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>371</width>
+        <height>411</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QListWidget::item {
+	background-color: #d9d9d9;
+	margin: 5px;
+	padding: 3px;
+	border-radius: 5px;
+}
+</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>HR: 100 bpm, spo2: 98% | 5/24/2022 2:19 AM</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>HR: 100 bpm, spo2: 98% | 5/24/2022 2:19 AM</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>HR: 100 bpm, spo2: 98% | 5/24/2022 2:19 AM</string>
+       </property>
+      </item>
      </widget>
     </widget>
    </widget>

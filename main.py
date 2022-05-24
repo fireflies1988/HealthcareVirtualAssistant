@@ -1,5 +1,5 @@
 import sys
-import time
+from datetime import *
 
 import pyttsx3 as pyttsx3
 from PyQt5.QtWidgets import QMainWindow, QApplication
@@ -14,6 +14,10 @@ from sensor import read_sensor
 from virtual_assistant import speak
 from virtual_assistant_2 import *
 from alarm_dialog import Ui_Dialog
+import speech_recognition as sr
+import playsound
+from PyQt5 import QtCore, QtGui, QtWidgets
+from firebase_database import *
 
 global command
 command = ""
@@ -123,10 +127,60 @@ class ThreadClass2(QThread):
         self.heart_rate_signal.emit(f"Your average heart rate is {avg_heart_rate} bpm")
         self.spo2_signal.emit(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
 
+        # save data to firebase database
+        data = {"user": "temp", "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                "hr": avg_heart_rate, "spo2": raw_data[raw_data.__len__() - 1].spo2}
+        db.child("MeasurementHistory").push(data)
+
     def stop(self):
         print('Stopping thread', self.index)
         self.arduino_data.close()
         self.terminate()
+
+
+class ThreadClass3(QThread):
+    voice_data_signal = pyqtSignal(str)
+    error_signal = pyqtSignal(str)
+
+    def __init__(self, index=0, ask=None):
+        super().__init__()
+        self.index = index
+        self.ask = ask
+
+    def run(self):
+        with sr.Microphone() as source:
+            if self.ask:
+                speak(self.ask)
+            recognizer.adjust_for_ambient_noise(source, duration=1)
+            audio = recognizer.listen(source)  # lúc đang nghe thì tất cả các luồng sẽ dừng
+            try:
+                voice_data = recognizer.recognize_google(audio, language="en-US")
+                self.voice_data_signal.emit(voice_data)
+            except sr.UnknownValueError:
+                speak("Sorry, I did not get that.")
+                self.error_signal.emit("Sorry, I did not get that.")
+                # raise sr.UnknownValueError
+            except sr.RequestError:
+                speak("Sorry, my speech service is down.")
+                self.error_signal.emit("Sorry, my speech service is down.")
+                # raise sr.RequestError
+
+    def stop(self):
+        print('Stopping thread', self.index)
+        self.terminate()
+
+
+def changBtnSpeakIcon(self, type=True):
+    if type:
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("icon/blue-mic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.uic.btn_speak.setIcon(icon1)
+        self.uic.btn_speak.setIconSize(QtCore.QSize(48, 48))
+    else:
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("icon/voice-wave.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.uic.btn_speak.setIcon(icon1)
+        self.uic.btn_speak.setIconSize(QtCore.QSize(48, 48))
 
 
 class MainWindow(QMainWindow):
@@ -223,13 +277,32 @@ class MainWindow(QMainWindow):
         print(name + " " + phone + " " + sex + " " + disease)
 
     def on_click_speak_button(self):
-        global command
-        global isListening
-        if not isListening:
-            isListening = not isListening
-            # threading.Thread(target=change_speak_button_status).start()
-            # change_speak_button_status()
-            threading.Thread(target=listen2).start()
+        # global command
+        # global isListening
+        # isListening = False
+        # if not isListening:
+        #     isListening = not isListening
+        # threading.Thread(target=change_speak_button_status).start()
+        # change_speak_button_status()
+        playsound.playsound('sound/data_2.wav')
+        changBtnSpeakIcon(self=self, type=False)
+        self.thread[3] = ThreadClass3(index=1)
+        self.thread[3].start()
+        self.thread[3].voice_data_signal.connect(self.updateUI)
+        self.thread[3].error_signal.connect(self.errorWhileHearing)
+        # threading.Thread(target=listen2(self)).start()
+
+    def updateUI(self, voice_data_signal):
+        self.uic.chat_user.setText(voice_data_signal)
+        self.speechRunnable = SpeechRunnable()
+        respond2(self, voice_data_signal)
+        changBtnSpeakIcon(self=self, type=True)
+        # speak(voice_data_signal)
+
+    def errorWhileHearing(self, error_signal):
+        self.uic.chat_user.setText("...")
+        self.uic.chat_bot.setText(error_signal)
+        changBtnSpeakIcon(self=self, type=True)
 
     def on_click_send(self):
         text = ""
@@ -243,59 +316,6 @@ class MainWindow(QMainWindow):
             # print(text)
 
         # threading.Thread(target=respond2(self, text), daemon=True).start()
-
-
-def measure_max30100_2(arduino_data, self):
-    raw_data = []
-    flag = True
-    timeout = None
-    count = 0
-
-    while flag:
-        data_from_sensor = read_sensor(arduino_data)
-        print(data_from_sensor)
-        data = data_from_sensor.split(",")
-        if data.__len__() > 1:  # chỉ lấy dữ liệu có đầy đủ cả hai phần tử
-            if data[0] == "0" or data[1] == "0":
-                timeout = None
-                raw_data.clear()
-                count += 1
-
-                if count > 5:
-                    # self.uic.heart_widget.setEnabled(False)
-                    # self.uic.heart_rate_label.show()
-                    # self.uic.heart_rate_label.setText("Place your index finger on the sensor")
-                    count = 0
-                continue
-
-            if timeout is None:
-                timeout = time.time() + 20
-
-            if time.time() > timeout:
-                flag = False
-
-            else:  # khi mọi thứ đã hoàn hảo
-                sensor_data = SensorData(heart_rate=data[0], spo2=data[1])
-                raw_data.append(sensor_data)
-
-                self.uic.heart_widget.setEnabled(True)
-                self.uic.heart_rate_label.show()
-                self.uic.heart_rate_label.setText("Measuring")
-
-        time.sleep(1)
-
-    # tính toán nhịp tim trung bình
-    sum_heart_rate = 0
-    for d in raw_data:
-        sum_heart_rate += int(d.heart_rate)
-
-    avg_heart_rate = int(sum_heart_rate / raw_data.__len__())
-
-    self.uic.heart_widget.setEnabled(True)
-    self.uic.heart_rate_label.show()
-    self.uic.spo2_label.show()
-    self.uic.heart_rate_label.setText(f"Your average heart rate is {avg_heart_rate} bpm")
-    self.uic.spo2_label.setText(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
 
 
 if __name__ == "__main__":
