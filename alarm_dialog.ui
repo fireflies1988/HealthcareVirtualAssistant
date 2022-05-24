@@ -18,7 +18,10 @@
     <normaloff>icon/clock.png</normaloff>icon/clock.png</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">background: #F0F0F0</string>
+   <string notr="true">border:none;
+outline:none;
+background: #F0F0F0;
+border-radius:10px</string>
   </property>
   <widget class="QLabel" name="label_3">
    <property name="geometry">
@@ -156,7 +159,8 @@ border-radius: 10px</string>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background:white</string>
+    <string notr="true">background:white;
+border-radius:10px;</string>
    </property>
   </widget>
   <widget class="QCheckBox" name="isOnce">

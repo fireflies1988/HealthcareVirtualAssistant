@@ -1,3 +1,4 @@
+import datetime
 import sys
 import time
 import uuid
@@ -12,6 +13,7 @@ from PyQt5.QtWidgets import *
 import ReadWrite
 import account
 import firebase_database
+import prompt_dialog
 import signin_form
 import signup_form
 from ReadWrite import Alarm
@@ -257,6 +259,7 @@ class ThreadClass3(QThread):
         self.terminate()
 
 
+# speak
 class ThreadClass4(QThread):
     # voice_data_signal = pyqtSignal(str)
     # error_signal = pyqtSignal(str)
@@ -291,6 +294,37 @@ class ThreadClass4(QThread):
         self.terminate()
 
 
+class ThreadClass5(QThread):
+    open_prompt_signal = pyqtSignal(object)
+
+    def __init__(self, index=0, alarm=None):
+        super().__init__()
+        self.index = index
+        self.alarm = alarm
+
+    def run(self):
+        while True:
+            time.sleep(1)
+            current_time = datetime.now()
+            now = current_time.strftime("%H:%M")
+            date = current_time.strftime("%d/%m/%Y")
+            print("The Set Date is:", date)
+            print("Thời gian hiện tại", now)
+            alarm_time = datetime.strptime(self.alarm.__get_time__(), '%H:%M')
+            alarm_time_str = alarm_time.strftime("%H:%M")
+            print("Thời gian báo thưc", alarm_time_str)
+            if now == alarm_time_str:
+                print("Tin nhắn", self.alarm.message)
+                self.open_prompt_signal.emit(self.alarm)
+                # playsound.playsound("sound")
+                if self.alarm.is_once:
+                    break
+
+    def stop(self):
+        print('Stopping thread', self.index)
+        self.terminate()
+
+
 class AlarmDialog(QDialog):
     def __init__(self, parent=None):
         super(AlarmDialog, self).__init__(parent)
@@ -317,6 +351,24 @@ class AlarmDialog(QDialog):
         self.close()
 
     def on_click_btn_cancel_set_alarm(self):
+        self.close()
+        print()
+
+
+class PromptDialog(QDialog):
+    def __init__(self, parent=None, alarm=None):
+        super(PromptDialog, self).__init__(parent)
+        self.main_win = QDialog()
+        self.parent = parent
+        self.alarm = alarm
+        self.uic = prompt_dialog.Ui_Dialog()
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.uic.setupUi(self)
+        self.uic.btn_ok.clicked.connect(self.on_click_btn_ok)
+        self.uic.time_label.setText(self.alarm.__get_time__())
+        self.uic.message_label.setText(self.alarm.message)
+
+    def on_click_btn_ok(self):
         self.close()
         print()
 
@@ -373,13 +425,23 @@ class MainWindow(QMainWindow):
     def fill_alarm_list(self):
         self.uic.alarm_list.clear()
         alarm_list = ReadWrite.readFile()
+        i = 0
         for alarm in alarm_list:
             item = QListWidgetItem(self.uic.alarm_list)
             self.uic.alarm_list.addItem(item)
             row = AlarmItem(parent=self, alarm=alarm)
             item.setSizeHint(row.minimumSizeHint())
             self.uic.alarm_list.setItemWidget(item, row)
-        threading.Thread(target=self.introduce2, daemon=True).start()
+            self.thread[5] = ThreadClass5(index=i, alarm=alarm)
+            self.thread[5].start()
+            self.thread[5].open_prompt_signal.connect(self.open_prompt)
+            promptDialog = PromptDialog(alarm=alarm)
+            promptDialog.exec_()
+            i += 1
+
+    def open_prompt(self, open_prompt_signal):
+        promptDialog = PromptDialog(alarm=open_prompt_signal)
+        promptDialog.exec_()
 
     def speak(self, text):
         if self.is_speaking:
@@ -620,10 +682,10 @@ class SignUpForm(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    # main_win = MainWindow()
-    # main_win.show()
-    signInForm = SignInForm()
-    signInForm.show()
+    main_win = MainWindow()
+    main_win.show()
+    # signInForm = SignInForm()
+    # signInForm.show()
     # main_win = MainWindow()
     # main_win.show()
     sys.exit(app.exec())
