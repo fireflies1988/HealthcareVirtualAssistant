@@ -34,7 +34,8 @@ class Login(QDialog):
         email = self.email.text()
         password = self.password.text()
         try:
-            auth.sign_in_with_email_and_password(email, password)
+            ref = auth.sign_in_with_email_and_password(email, password)
+            print(ref['localId'])
             # mainwindow = MainWindow()
             # widget.addWidget(MainWindow())
             # widget.setCurrentIndex(widget.currentIndex() + 1)
@@ -42,6 +43,9 @@ class Login(QDialog):
             mainwindow2 = MainWindow()
             mainwindow2.show()
             self.close()
+
+
+
         except:
             self.invalid.setVisible(True)
 
