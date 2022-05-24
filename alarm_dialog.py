@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(390, 300)
+        Dialog.resize(390, 301)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("icon/clock.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
@@ -25,15 +25,6 @@ class Ui_Dialog(object):
         font.setFamily("Roboto")
         self.label_3.setFont(font)
         self.label_3.setObjectName("label_3")
-        self.alarm_time = QtWidgets.QDateTimeEdit(Dialog)
-        self.alarm_time.setGeometry(QtCore.QRect(20, 90, 194, 22))
-        font = QtGui.QFont()
-        font.setFamily("Roboto")
-        self.alarm_time.setFont(font)
-        self.alarm_time.setStyleSheet("background: #fff")
-        self.alarm_time.setDateTime(QtCore.QDateTime(QtCore.QDate(2022, 5, 22), QtCore.QTime(7, 0, 0)))
-        self.alarm_time.setCalendarPopup(True)
-        self.alarm_time.setObjectName("alarm_time")
         self.label_2 = QtWidgets.QLabel(Dialog)
         self.label_2.setGeometry(QtCore.QRect(20, 70, 47, 13))
         font = QtGui.QFont()
@@ -70,10 +61,18 @@ class Ui_Dialog(object):
         font = QtGui.QFont()
         font.setFamily("Roboto")
         self.btn_set_alarm.setFont(font)
-        self.btn_set_alarm.setStyleSheet("background: white;\n"
+        self.btn_set_alarm.setStyleSheet("background: #000;\n"
+"color: #fff;\n"
 "border: none;\n"
 "border-radius: 10px")
         self.btn_set_alarm.setObjectName("btn_set_alarm")
+        self.alarm_time = QtWidgets.QTimeEdit(Dialog)
+        self.alarm_time.setGeometry(QtCore.QRect(20, 90, 118, 22))
+        self.alarm_time.setStyleSheet("background:white")
+        self.alarm_time.setObjectName("alarm_time")
+        self.isOnce = QtWidgets.QCheckBox(Dialog)
+        self.isOnce.setGeometry(QtCore.QRect(180, 91, 70, 17))
+        self.isOnce.setObjectName("isOnce")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -86,6 +85,7 @@ class Ui_Dialog(object):
         self.label.setText(_translate("Dialog", "New Alarm"))
         self.btn_cancel_set_alarm.setText(_translate("Dialog", "Cancel"))
         self.btn_set_alarm.setText(_translate("Dialog", "OK"))
+        self.isOnce.setText(_translate("Dialog", "Once"))
 
 
 if __name__ == "__main__":

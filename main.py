@@ -1,4 +1,6 @@
 import sys
+import time
+import uuid
 from datetime import *
 
 import pyttsx3 as pyttsx3
@@ -7,6 +9,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
+import ReadWrite
+from ReadWrite import Alarm
 from SensorData import SensorData
 from app import Ui_MainWindow
 # from virtual_assistant import introduce
@@ -170,17 +174,65 @@ class ThreadClass3(QThread):
         self.terminate()
 
 
-def changBtnSpeakIcon(self, type=True):
-    if type:
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("icon/blue-mic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.uic.btn_speak.setIcon(icon1)
-        self.uic.btn_speak.setIconSize(QtCore.QSize(48, 48))
-    else:
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("icon/voice-wave.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.uic.btn_speak.setIcon(icon1)
-        self.uic.btn_speak.setIconSize(QtCore.QSize(48, 48))
+class ThreadClass4(QThread):
+    # voice_data_signal = pyqtSignal(str)
+    # error_signal = pyqtSignal(str)
+
+    def __init__(self, index=0, text=""):
+        super().__init__()
+        self.text = text
+        self.index = index
+        self.engine = pyttsx3.init()
+        voices = self.engine.getProperty('voices')
+        self.engine.setProperty('voice', voices[1].id)  # voices[0]: male voice, voices[1]: female voice
+
+    def run(self):
+        try:
+            if self.engine._inLoop:
+                self.engine.endLoop()
+
+            if self.text.strip().__len__() != 0:
+                self.engine.say(self.text)
+                self.engine.runAndWait()
+
+        except Exception as e:
+            print("speak error ")
+
+    def stop(self):
+        print('Stopping thread', self.index)
+        try:
+            self.engine.endLoop()
+            self.engine.stop()
+        except Exception as e:
+            print("stop speak error ")
+        self.terminate()
+
+
+class AlarmDialog(QDialog):
+    def __init__(self, parent=None):
+        super(AlarmDialog, self).__init__(parent)
+        self.main_win = QDialog()
+        self.uic = Ui_Dialog()
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.uic.setupUi(self)
+        self.uic.btn_cancel_set_alarm.clicked.connect(self.on_click_btn_cancel_set_alarm)
+        self.uic.btn_set_alarm.clicked.connect(self.on_click_btn_set_alarm)
+
+    def on_click_btn_set_alarm(self):
+        hour = self.uic.alarm_time.time().hour()
+        minute = self.uic.alarm_time.time().minute()
+        is_once = self.uic.isOnce.isChecked()
+        message = self.uic.alarm_message.toPlainText()
+
+        alarm = Alarm(uuid=uuid.uuid4(), hour=hour, minute=minute, message=message, is_once=is_once)
+        alarm_list = ReadWrite.readFile()
+        alarm_list.append(alarm)
+        ReadWrite.writeFile(alarm_list)
+        print(len(alarm_list))
+
+    def on_click_btn_cancel_set_alarm(self):
+        self.close()
+        print()
 
 
 class MainWindow(QMainWindow):
@@ -191,6 +243,8 @@ class MainWindow(QMainWindow):
         self.uic = Ui_MainWindow()
         self.thread = {}
         self.uic.setupUi(self.main_win)
+        self.is_btn_speak_clicked = False
+        self.is_speaking = False
         self.uic.btn_speak.clicked.connect(self.on_click_speak_button)
         self.uic.btnUpdate.clicked.connect(self.updatePatient)
 
@@ -208,10 +262,27 @@ class MainWindow(QMainWindow):
         self.uic.weather_widget.hide()
         self.speechRunnable = SpeechRunnable()
 
-        self.uic.btn_active.clicked.connect(self.start_worker_2)
+        self.uic.btn_active.clicked.connect(
+            lambda: self.speak("Hi, I'm your healthcare virtual assistant. \nWhat can I do for you?"))
+        self.uic.btn_new_alarm.clicked.connect(self.on_click_btn_new_alarm)
+        self.alarm_dialog = None
         threading.Thread(target=introduce2, args={self}, daemon=True).start()
 
-    def start_worker_2(self):
+    def speak(self, text):
+        if self.is_speaking:
+            self.is_speaking = not self.is_speaking
+            self.thread[4].stop()
+            return
+
+        self.is_speaking = not self.is_speaking
+        self.thread[4] = ThreadClass4(index=1, text=text)
+        self.thread[4].start()
+        # self.thread[4].error_signal.connect(self.errorWhileMeasuring)
+        # self.thread[4].measuring_signal.connect(self.measuring)
+        # self.thread[4].heart_rate_signal.connect(self.showHeartRate)
+        # self.thread[4].spo2_signal.connect(self.showSpo2)
+
+    def measureHeartRate(self):
         self.uic.chat_user_widget.hide()
         self.uic.chat_bot_widget.hide()
         self.uic.heart_widget.show()
@@ -276,33 +347,46 @@ class MainWindow(QMainWindow):
         disease = self.uic.textEditDisease.toPlainText()
         print(name + " " + phone + " " + sex + " " + disease)
 
+    def changBtnSpeakIcon(self, icon_type=True):
+        if icon_type:
+            icon1 = QtGui.QIcon()
+            icon1.addPixmap(QtGui.QPixmap("icon/blue-mic.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.uic.btn_speak.setIcon(icon1)
+            self.uic.btn_speak.setIconSize(QtCore.QSize(48, 48))
+        else:
+            icon1 = QtGui.QIcon()
+            icon1.addPixmap(QtGui.QPixmap("icon/voice-wave.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.uic.btn_speak.setIcon(icon1)
+            self.uic.btn_speak.setIconSize(QtCore.QSize(48, 48))
+
     def on_click_speak_button(self):
-        # global command
-        # global isListening
-        # isListening = False
-        # if not isListening:
-        #     isListening = not isListening
-        # threading.Thread(target=change_speak_button_status).start()
-        # change_speak_button_status()
+        if self.is_btn_speak_clicked:
+            self.is_btn_speak_clicked = not self.is_btn_speak_clicked
+            self.thread[3].stop()
+            self.changBtnSpeakIcon(icon_type=True)
+            return
+
+        self.is_btn_speak_clicked = not self.is_btn_speak_clicked
+
         playsound.playsound('sound/data_2.wav')
-        changBtnSpeakIcon(self=self, type=False)
+        self.changBtnSpeakIcon(icon_type=False)
         self.thread[3] = ThreadClass3(index=1)
         self.thread[3].start()
-        self.thread[3].voice_data_signal.connect(self.updateUI)
+        self.thread[3].voice_data_signal.connect(self.finishHearing)
         self.thread[3].error_signal.connect(self.errorWhileHearing)
         # threading.Thread(target=listen2(self)).start()
 
-    def updateUI(self, voice_data_signal):
+    def finishHearing(self, voice_data_signal):
         self.uic.chat_user.setText(voice_data_signal)
         self.speechRunnable = SpeechRunnable()
         respond2(self, voice_data_signal)
-        changBtnSpeakIcon(self=self, type=True)
+        self.changBtnSpeakIcon(icon_type=True)
         # speak(voice_data_signal)
 
     def errorWhileHearing(self, error_signal):
         self.uic.chat_user.setText("...")
         self.uic.chat_bot.setText(error_signal)
-        changBtnSpeakIcon(self=self, type=True)
+        self.changBtnSpeakIcon(icon_type=True)
 
     def on_click_send(self):
         text = ""
@@ -316,6 +400,10 @@ class MainWindow(QMainWindow):
             # print(text)
 
         # threading.Thread(target=respond2(self, text), daemon=True).start()
+
+    def on_click_btn_new_alarm(self):
+        dialog = AlarmDialog(self)
+        dialog.exec_()
 
 
 if __name__ == "__main__":

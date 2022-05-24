@@ -26,6 +26,7 @@ import ui
 from main import SpeechRunnable
 
 from suggestSicks import trackSicks
+
 recognizer = sr.Recognizer()
 
 
@@ -72,6 +73,7 @@ def change_bot_chat(self, result):
     self.uic.chat_bot.setText(result)
     self.speechRunnable.speak(result)
 
+
 def respond2(self, voice_data):
     # show the chat widget
     self.uic.chat_user_widget.show()
@@ -90,9 +92,13 @@ def respond2(self, voice_data):
         result = "My name is Zira"
         change_bot_chat(self, result)
 
-    elif "what time is it" in voice_data or "what is the time" in voice_data or "now" in voice_data:
-        result = datetime.now().strftime('%H:%M')
+    elif "what time is it" in voice_data or "what is the time" in voice_data or "time" in voice_data:
+        result = datetime.now().strftime('%I:%M %p')
         change_bot_chat(self, result)
+
+    elif "what date is it today" in voice_data or "today" in voice_data or "date" in voice_data:
+        result = datetime.now().strftime('%A, %d-%B-%Y')
+        change_bot_chat(self, "Today is " + result)
 
     elif "search" in voice_data:
         search = record_audio2("What do you want to search for?")
@@ -114,21 +120,22 @@ def respond2(self, voice_data):
         weather2(self)
 
     elif "heart rate" in voice_data:  # display heart rate of user
-        self.uic.chat_user_widget.hide()
-        self.uic.chat_bot_widget.hide()
-        self.uic.heart_widget.show()
-        self.uic.spo2_label.hide()
-
-        arduino_data = sensor.init_sensor()
-        if arduino_data is None:
-            self.uic.heart_widget.setEnabled(False)
-            self.uic.heart_rate_label.setText("This function is not available!")
-            self.speechRunnable.speak("This function is not available!")
-        else:
-            self.uic.heart_widget.setEnabled(True)
-            self.uic.heart_rate_label.setText("Place your index finger on the sensor with steady pressure.")
-            self.speechRunnable.speak("Place your index finger on the sensor with steady pressure.")
-            sensor.measure_max30100_2(arduino_data, self)
+        # self.uic.chat_user_widget.hide()
+        # self.uic.chat_bot_widget.hide()
+        # self.uic.heart_widget.show()
+        # self.uic.spo2_label.hide()
+        #
+        # arduino_data = sensor.init_sensor()
+        # if arduino_data is None:
+        #     self.uic.heart_widget.setEnabled(False)
+        #     self.uic.heart_rate_label.setText("This function is not available!")
+        #     self.speechRunnable.speak("This function is not available!")
+        # else:
+        #     self.uic.heart_widget.setEnabled(True)
+        #     self.uic.heart_rate_label.setText("Place your index finger on the sensor with steady pressure.")
+        #     self.speechRunnable.speak("Place your index finger on the sensor with steady pressure.")
+        #     sensor.measure_max30100_2(arduino_data, self)
+        self.measureHeartRate()
 
     elif "temperature" in voice_data:
         sensor.read_temperature()
