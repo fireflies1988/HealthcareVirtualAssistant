@@ -10,6 +10,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 import ReadWrite
+import firebase_database
 from ReadWrite import Alarm
 from SensorData import SensorData
 from app import Ui_MainWindow
@@ -22,7 +23,7 @@ import speech_recognition as sr
 import playsound
 from PyQt5 import QtCore, QtGui, QtWidgets
 from firebase_database import *
-
+import pyrebase
 global command
 command = ""
 
@@ -40,6 +41,7 @@ Subject: Hi doctor
 Patient is showing signs of poor health. """
 
 from twilio.rest import Client
+
 
 # Find your Account SID and Auth Token at twilio.com/console
 # and set the environment variables. See http://twil.io/secure
@@ -373,6 +375,7 @@ class MainWindow(QMainWindow):
             row = AlarmItem(parent=self, alarm=alarm)
             item.setSizeHint(row.minimumSizeHint())
             self.uic.alarm_list.setItemWidget(item, row)
+        threading.Thread(target=self.introduce2, daemon=True).start()
 
     def speak(self, text):
         if self.is_speaking:
@@ -453,6 +456,22 @@ class MainWindow(QMainWindow):
         disease = self.uic.textEditDisease.toPlainText()
         print(name + " " + phone + " " + sex + " " + disease)
 
+        firebase = pyrebase.initialize_app(firebase_database.firebaseConfig)
+        database = firebase.database()
+
+        data = {"patientCode": code, "patientName": name, "patientSex": sex, "patientPhone": phone,
+                "patientDisease": disease}
+
+        patient = database.child("PatientInformation").child(code).get()
+        print(patient)
+
+        if patient.val()!="" or patient.val()!= None:
+            print("exist")
+            database.child("PatientInformation").child(code).update(data)
+        else:
+            print("notexist")
+            database.child("PatientInformation").child(code).set(data)
+
     def changBtnSpeakIcon(self, icon_type=True):
         if icon_type:
             icon1 = QtGui.QIcon()
@@ -523,6 +542,12 @@ class MainWindow(QMainWindow):
     def on_click_btn_new_alarm(self):
         dialog = AlarmDialog(parent=self)
         dialog.exec_()
+
+    def introduce2(self):
+        self.uic.chat_bot.setText("Hi, I'm your healthcare virtual assistant. \nWhat can I do for you?")
+        playsound.playsound('sound/cortana_sound_effect.mp3')
+        self.speechRunnable = SpeechRunnable()
+        self.speechRunnable.speak("Hi, I'm your healthcare virtual assistant. What can I do for you?")
 
 
 if __name__ == "__main__":
