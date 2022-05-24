@@ -38,6 +38,16 @@ message = """\
 Subject: Hi doctor
 
 Patient is showing signs of poor health. """
+
+from twilio.rest import Client
+
+
+# Find your Account SID and Auth Token at twilio.com/console
+# and set the environment variables. See http://twil.io/secure
+# account_sid = os.environ['TWILIO_ACCOUNT_SID']
+# auth_token = os.environ['TWILIO_AUTH_TOKEN']
+account_sid='AC98b3f8f8743972146b1f706fcdd4cf63'
+auth_token='14f22c92a29e83fe060322687cb98d4f'
 class SpeechRunnable(QRunnable):
     def __init__(self):
         super().__init__()
@@ -147,9 +157,17 @@ class ThreadClass2(QThread):
                 "hr": avg_heart_rate, "spo2": raw_data[raw_data.__len__() - 1].spo2}
         db.child("MeasurementHistory").push(data)
         if avg_heart_rate > 100 or raw_data[raw_data.__len__() - 1].spo2 <= 90:
-            sendemail(port, sender_email, receiver_email, password, message+ data)
-
-
+            try:
+                sendemail(port, sender_email, receiver_email, password, message + data)
+                client = Client(account_sid, auth_token)
+                message1 = client.messages.create(
+                    body=message + data,
+                    from_='+18507905695',
+                    to='+84386201456'
+                )
+                print(message1.body)
+            except Exception :
+                print("Sorry ! You are dividing by zero ")
 
     def stop(self):
         print('Stopping thread', self.index)
