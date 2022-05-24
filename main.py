@@ -282,7 +282,7 @@ class MainWindow(QMainWindow):
             lambda: self.speak("Hi, I'm your healthcare virtual assistant. \nWhat can I do for you?"))
         self.uic.btn_new_alarm.clicked.connect(self.on_click_btn_new_alarm)
         self.alarm_dialog = None
-        threading.Thread(target=introduce2, args={self}, daemon=True).start()
+        threading.Thread(target=self.introduce2, daemon=True).start()
 
     def speak(self, text):
         if self.is_speaking:
@@ -433,6 +433,12 @@ class MainWindow(QMainWindow):
     def on_click_btn_new_alarm(self):
         dialog = AlarmDialog(self)
         dialog.exec_()
+
+    def introduce2(self):
+        self.uic.chat_bot.setText("Hi, I'm your healthcare virtual assistant. \nWhat can I do for you?")
+        playsound.playsound('sound/cortana_sound_effect.mp3')
+        self.speechRunnable = SpeechRunnable()
+        self.speechRunnable.speak("Hi, I'm your healthcare virtual assistant. What can I do for you?")
 
 
 if __name__ == "__main__":

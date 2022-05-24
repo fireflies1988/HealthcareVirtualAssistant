@@ -2,6 +2,8 @@ import json
 import threading
 from pprint import pprint
 from tkinter import *
+
+
 from virtual_assistant import speak
 
 import geocoder
@@ -23,7 +25,7 @@ import requests
 import pyjokes
 import time
 import ui
-from main import SpeechRunnable
+# from main import SpeechRunnable
 
 from suggestSicks import trackSicks
 
@@ -176,11 +178,6 @@ def respond2(self, voice_data):
         change_bot_chat(self, result)
 
 
-def introduce2(self):
-    self.uic.chat_bot.setText("Hi, I'm your healthcare virtual assistant. \nWhat can I do for you?")
-    playsound.playsound('sound/cortana_sound_effect.mp3')
-    self.speechRunnable = SpeechRunnable()
-    self.speechRunnable.speak("Hi, I'm your healthcare virtual assistant. What can I do for you?")
 
 
 def set_alarm(self, time):
