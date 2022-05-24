@@ -352,8 +352,9 @@ def measure_max30102(arduino_data):
 
     virtual_assistant.speak(f"Your average heart rate is {raw_data[raw_data.__len__() - 1]} bpm")
     virtual_assistant.speak(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
-    if raw_data[raw_data.__len__() - 1] > 100:
-        sendemail(port, sender_email, receiver_email, password, message + raw_data[raw_data.__len__() - 1])
+    if raw_data[raw_data.__len__() - 1] > 100 or raw_data[raw_data.__len__() - 1].spo2 <= 90 :
+        sendemail(port, sender_email, receiver_email, password, message+raw_data[raw_data.__len__() - 1] +" their spo2: "+ raw_data[raw_data.__len__() - 1].spo2)
+
 
 
 def measure_max30102_df_robot(arduino_data):
