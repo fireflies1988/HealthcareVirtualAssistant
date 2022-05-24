@@ -355,7 +355,7 @@ class MainWindow(QMainWindow):
             lambda: self.speak("Hi, I'm your healthcare virtual assistant. \nWhat can I do for you?"))
         self.uic.btn_new_alarm.clicked.connect(self.on_click_btn_new_alarm)
         self.alarm_dialog = None
-        threading.Thread(target=introduce2, args={self}, daemon=True).start()
+        threading.Thread(target=self.introduce2, args={self}, daemon=True).start()
         self.uic.alarm_list.setStyleSheet("QListWidget::item {"
                                           "border:none;"
                                           "background-color: white;"
