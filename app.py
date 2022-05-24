@@ -175,7 +175,7 @@ class Ui_MainWindow(object):
 "padding: 10px")
         self.listWidget.setObjectName("listWidget")
         self.label = QtWidgets.QLabel(self.tab_2)
-        self.label.setGeometry(QtCore.QRect(140, 40, 81, 21))
+        self.label.setGeometry(QtCore.QRect(150, 40, 81, 21))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(12)
