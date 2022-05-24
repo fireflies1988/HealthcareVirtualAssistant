@@ -44,7 +44,7 @@ outline:none;
 background: #F0F0F0;</string>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -772,6 +772,26 @@ background-color: #37455E;</string>
        <string>Update</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="btnSignout">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>370</y>
+        <width>91</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border-radius: 4px;
+border: 1px solid black;
+color: white;
+font-weight: bold;
+background-color: #37455E;</string>
+      </property>
+      <property name="text">
+       <string>Sign out</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_history">
      <attribute name="title">
@@ -928,6 +948,15 @@ border-raidus: 10px;</string>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionBack">
+   <property name="icon">
+    <iconset>
+     <normaloff>../../Users/PC/Pictures/423-4237996_return-svg-png-icon-free-download-onlinewebfonts-return-back-icon.png</normaloff>../../Users/PC/Pictures/423-4237996_return-svg-png-icon-free-download-onlinewebfonts-return-back-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Back</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

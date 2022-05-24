@@ -34,6 +34,9 @@ command = ""
 
 from sendmail import sendemail
 
+# from account import Login
+# from account import CreateAcc
+
 port = 465  # For SSL
 smtp_server = "smtp.gmail.com"
 sender_email = "n18dccn237java@gmail.com"  # Enter your address nqubjcnsenjyrppp
@@ -333,6 +336,7 @@ class MainWindow(QMainWindow):
         self.is_speaking = False
         self.uic.btn_speak.clicked.connect(self.on_click_speak_button)
         self.uic.btnUpdate.clicked.connect(self.updatePatient)
+        self.uic.btnSignout.clicked.connect(self.goto_signin)
         self.uic.tabWidget.tabBarClicked.connect(self.get_measurement_history_data)
 
         self.uic.lineEditPatientCode.setText("patientcode")
@@ -380,6 +384,11 @@ class MainWindow(QMainWindow):
             item.setSizeHint(row.minimumSizeHint())
             self.uic.alarm_list.setItemWidget(item, row)
         threading.Thread(target=self.introduce2, daemon=True).start()
+
+    def goto_signin(self):
+        signInForm = SignInForm()
+        signInForm.show()
+        self.main_win.close()
 
     def speak(self, text):
         if self.is_speaking:
@@ -575,6 +584,9 @@ class SignInForm(QMainWindow):
             mainWindow.show()
             self.main_win.close()
 
+
+
+
         except Exception as e:
             self.uic.invalid.setVisible(True)
 
@@ -584,6 +596,8 @@ class SignInForm(QMainWindow):
         self.main_win.close()
         # widget.addWidget(createAcc)
         # widget.setCurrentIndex(widget.currentIndex() + 1)
+
+
 
     def show(self):
         self.main_win.show()
@@ -598,7 +612,13 @@ class SignUpForm(QMainWindow):
         self.uic.signupbutton.clicked.connect(self.create_acc_function)
         self.uic.password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.uic.confirmpass.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.uic.btnback.clicked.connect(self.goto_signin)
         self.uic.invalid.setVisible(False)
+
+    def goto_signin(self):
+        signInForm = SignInForm()
+        signInForm.show()
+        self.main_win.close()
 
     def create_acc_function(self):
         email = self.uic.email.text()

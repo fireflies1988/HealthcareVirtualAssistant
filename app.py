@@ -275,6 +275,14 @@ class Ui_MainWindow(object):
 "font-weight: bold;\n"
 "background-color: #37455E;")
         self.btnUpdate.setObjectName("btnUpdate")
+        self.btnSignout = QtWidgets.QPushButton(self.tab_3)
+        self.btnSignout.setGeometry(QtCore.QRect(120, 370, 91, 23))
+        self.btnSignout.setStyleSheet("border-radius: 4px;\n"
+"border: 1px solid black;\n"
+"color: white;\n"
+"font-weight: bold;\n"
+"background-color: #37455E;")
+        self.btnSignout.setObjectName("btnSignout")
         self.tabWidget.addTab(self.tab_3, "")
         self.tab_history = QtWidgets.QWidget()
         self.tab_history.setObjectName("tab_history")
@@ -340,9 +348,14 @@ class Ui_MainWindow(object):
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
+        self.actionBack = QtWidgets.QAction(MainWindow)
+        icon4 = QtGui.QIcon()
+        icon4.addPixmap(QtGui.QPixmap("../../Users/PC/Pictures/423-4237996_return-svg-png-icon-free-download-onlinewebfonts-return-back-icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.actionBack.setIcon(icon4)
+        self.actionBack.setObjectName("actionBack")
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -373,7 +386,8 @@ class Ui_MainWindow(object):
         self.label_10.setText(_translate("MainWindow", "Sex:"))
         self.radioButtonMale.setText(_translate("MainWindow", "Male"))
         self.radioButtonFemale.setText(_translate("MainWindow", "Female"))
-        self.btnUpdate.setText(_translate("MainWindow", "Save"))
+        self.btnUpdate.setText(_translate("MainWindow", "Update"))
+        self.btnSignout.setText(_translate("MainWindow", "Sign out"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Information"))
         self.label_2.setText(_translate("MainWindow", "Your measurement history"))
         __sortingEnabled = self.listWidget_history.isSortingEnabled()
@@ -387,6 +401,7 @@ class Ui_MainWindow(object):
         self.listWidget_history.setSortingEnabled(__sortingEnabled)
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_history), _translate("MainWindow", "History"))
         self.ask_entry.setPlaceholderText(_translate("MainWindow", "Ask me"))
+        self.actionBack.setText(_translate("MainWindow", "Back"))
 
 
 if __name__ == "__main__":
