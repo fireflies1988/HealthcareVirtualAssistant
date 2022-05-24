@@ -247,6 +247,7 @@ class MainWindow(QMainWindow):
         self.is_speaking = False
         self.uic.btn_speak.clicked.connect(self.on_click_speak_button)
         self.uic.btnUpdate.clicked.connect(self.updatePatient)
+        self.uic.tabWidget.tabBarClicked.connect(self.get_measurement_history_data)
 
         self.uic.lineEditPatientCode.setText("patientcode")
         self.uic.lineEditName.setText("name")
@@ -375,6 +376,19 @@ class MainWindow(QMainWindow):
         self.thread[3].voice_data_signal.connect(self.finishHearing)
         self.thread[3].error_signal.connect(self.errorWhileHearing)
         # threading.Thread(target=listen2(self)).start()
+
+    def get_measurement_history_data(self, index):
+        # index == 3: tab_history
+        if index == 3:
+            self.uic.listWidget_history.clear()
+            temp = db.child("MeasurementHistory").get().val()
+            for x in temp:
+                date = temp[x]['date']
+                hr = temp[x]['hr']
+                spo2 = temp[x]['spo2']
+                item = QListWidgetItem()
+                self.uic.listWidget_history.addItem(item)
+                item.setText("HR: {} bpm, spo2: {}% | {}".format(hr, spo2, date))
 
     def finishHearing(self, voice_data_signal):
         self.uic.chat_user.setText(voice_data_signal)

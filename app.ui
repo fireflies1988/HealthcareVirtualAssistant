@@ -773,7 +773,7 @@ background-color: #37455E;</string>
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab_4">
+    <widget class="QWidget" name="tab_history">
      <attribute name="title">
       <string>History</string>
      </attribute>
@@ -795,7 +795,7 @@ background-color: #37455E;</string>
        <string>Your measurement history</string>
       </property>
      </widget>
-     <widget class="QListWidget" name="listWidget_2">
+     <widget class="QListWidget" name="listWidget_history">
       <property name="geometry">
        <rect>
         <x>10</x>
