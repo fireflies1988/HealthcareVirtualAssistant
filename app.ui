@@ -44,7 +44,7 @@ outline:none;
 background: #F0F0F0;</string>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -441,13 +441,13 @@ border-radius:10px</string>
      <attribute name="title">
       <string>Alarm</string>
      </attribute>
-     <widget class="QListWidget" name="listWidget">
+     <widget class="QListWidget" name="alarm_list">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>80</y>
         <width>371</width>
-        <height>361</height>
+        <height>241</height>
        </rect>
       </property>
       <property name="styleSheet">
@@ -512,6 +512,71 @@ padding: 10px</string>
         <height>48</height>
        </size>
       </property>
+     </widget>
+     <widget class="QWidget" name="alarm_widget_item" native="true">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>360</y>
+        <width>281</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border: 1px solid black</string>
+      </property>
+      <widget class="QLabel" name="chat_bot_2">
+       <property name="geometry">
+        <rect>
+         <x>56</x>
+         <y>13</y>
+         <width>101</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>It's 9:00 pm</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_12">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>9</y>
+         <width>31</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="pixmap">
+        <pixmap>icon/clock.png</pixmap>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton">
+       <property name="geometry">
+        <rect>
+         <x>240</x>
+         <y>12</y>
+         <width>31</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>icon/close.png</normaloff>icon/close.png</iconset>
+       </property>
+      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_3">

@@ -109,7 +109,7 @@ class ThreadClass2(QThread):
                     continue
 
                 if timeout is None:
-                    timeout = time.time() + 5
+                    timeout = time.time() + 15
 
                 if time.time() > timeout:
                     flag = False
@@ -140,6 +140,34 @@ class ThreadClass2(QThread):
         print('Stopping thread', self.index)
         self.arduino_data.close()
         self.terminate()
+
+
+class AlarmItem(QWidget):
+    def __init__(self, parent=None, time_alarm=""):
+        super(AlarmItem, self).__init__()
+        self.parent = parent
+        self.time_alarm = time_alarm
+        self.row = QHBoxLayout()
+        self.row.setGeometry(QtCore.QRect(0, 0, 281, 51))
+        clock = QLabel("clock")
+        clock.setGeometry(QtCore.QRect(10, 9, 31, 31))
+        clock.setText("")
+        clock.setPixmap(QtGui.QPixmap("icon/clock.png"))
+        clock.setAlignment(QtCore.Qt.AlignCenter)
+
+        pushButton = QtWidgets.QPushButton()
+        pushButton.setGeometry(QtCore.QRect(240, 12, 31, 23))
+        pushButton.setText(self.time_alarm)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap("icon/close.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        pushButton.setIcon(icon2)
+
+        self.row.addWidget(clock)
+        self.row.addWidget(QLabel(self.time_alarm))
+        self.row.addWidget(pushButton)
+        self.setLayout(self.row)
+        self.setStyleSheet("margin-bottom: 1px;\nborder:none;\npadding:0")
+        # self.setStyleSheet("background: #fff;\nborder-radius: 10px;\nmargin-bottom: 1px;\nborder:none;\npadding:0")
 
 
 class ThreadClass3(QThread):
@@ -219,8 +247,8 @@ class AlarmDialog(QDialog):
         self.uic.btn_set_alarm.clicked.connect(self.on_click_btn_set_alarm)
 
     def on_click_btn_set_alarm(self):
-        hour = self.uic.alarm_time.time().hour()
-        minute = self.uic.alarm_time.time().minute()
+        hour = self.uic.alarm_time.time_alarm().hour()
+        minute = self.uic.alarm_time.time_alarm().minute()
         is_once = self.uic.isOnce.isChecked()
         message = self.uic.alarm_message.toPlainText()
 
@@ -261,6 +289,26 @@ class MainWindow(QMainWindow):
         self.uic.heart_widget.hide()
         self.uic.weather_widget.hide()
         self.speechRunnable = SpeechRunnable()
+
+        # item1 = AlarmItem(self.uic.alarm_list)
+        # self.uic.alarm_list.addItem(item1)
+        # self.uic.alarm_list.addItem(item1)
+
+        # Create the list
+        mylist = self.uic.alarm_list
+
+        for n in range(6):
+            # Add to list a new item (item is simply an entry in your list)
+            item = QListWidgetItem(mylist)
+            mylist.addItem(item)
+
+            # Instanciate a custom widget
+            row = AlarmItem()
+
+            item.setSizeHint(row.minimumSizeHint())
+
+            # Associate the custom widget to the list entry
+            mylist.setItemWidget(item, row)
 
         self.uic.btn_active.clicked.connect(
             lambda: self.speak("Hi, I'm your healthcare virtual assistant. \nWhat can I do for you?"))

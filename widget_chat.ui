@@ -13,53 +13,6 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QWidget" name="chat_bot_widget" native="true">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>281</width>
-     <height>51</height>
-    </rect>
-   </property>
-   <widget class="QLabel" name="chat_bot">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>5</y>
-      <width>231</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: rgb(255, 255, 255);
-border-radius: 10px;
-padding-left: 10px</string>
-    </property>
-    <property name="text">
-     <string>It's 9:00 pm</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_7">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>31</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-    <property name="pixmap">
-     <pixmap>icon/bot.png</pixmap>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-  </widget>
  </widget>
  <resources/>
  <connections/>
