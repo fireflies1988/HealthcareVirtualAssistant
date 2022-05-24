@@ -21,6 +21,3 @@ def sendemail(port, sender_email, receiver_email, password,message):
         server.sendmail(sender_email, receiver_email, message)
 
 
-# # Run
-# sendemail(port, sender_email, receiver_email, password, message)
-# print("Status: Exit")
