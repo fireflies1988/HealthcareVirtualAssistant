@@ -42,7 +42,7 @@ class Login(QDialog):
             # self.window = QtWidgets.QMainWindow()
             mainwindow2 = MainWindow()
             mainwindow2.show()
-            self.close()
+            # self.close()
 
 
 

@@ -24,10 +24,13 @@ import playsound
 from PyQt5 import QtCore, QtGui, QtWidgets
 from firebase_database import *
 import pyrebase
+
 global command
 command = ""
 
 from sendmail import sendemail
+# from account import Login
+# from account import CreateAcc
 
 port = 465  # For SSL
 smtp_server = "smtp.gmail.com"
@@ -42,13 +45,14 @@ Patient is showing signs of poor health. """
 
 from twilio.rest import Client
 
-
 # Find your Account SID and Auth Token at twilio.com/console
 # and set the environment variables. See http://twil.io/secure
 # account_sid = os.environ['TWILIO_ACCOUNT_SID']
 # auth_token = os.environ['TWILIO_AUTH_TOKEN']
-account_sid='AC98b3f8f8743972146b1f706fcdd4cf63'
-auth_token='14f22c92a29e83fe060322687cb98d4f'
+account_sid = 'AC98b3f8f8743972146b1f706fcdd4cf63'
+auth_token = '14f22c92a29e83fe060322687cb98d4f'
+
+
 class SpeechRunnable(QRunnable):
     def __init__(self):
         super().__init__()
@@ -167,7 +171,7 @@ class ThreadClass2(QThread):
                     to='+84386201456'
                 )
                 print(message1.body)
-            except Exception :
+            except Exception:
                 print("Sorry ! You are dividing by zero ")
 
     def stop(self):
@@ -391,7 +395,7 @@ class MainWindow(QMainWindow):
         patient = database.child("PatientInformation").child(code).get()
         print(patient)
 
-        if patient.val()!="" or patient.val()!= None:
+        if patient.val() != "" or patient.val() != None:
             print("exist")
             database.child("PatientInformation").child(code).update(data)
         else:
@@ -478,6 +482,8 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    # login_form = Login()
+    # login_form.open()
     main_win = MainWindow()
     main_win.show()
     sys.exit(app.exec())
