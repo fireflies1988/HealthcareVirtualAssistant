@@ -169,11 +169,11 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.tab, "")
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
-        self.listWidget = QtWidgets.QListWidget(self.tab_2)
-        self.listWidget.setGeometry(QtCore.QRect(10, 80, 371, 361))
-        self.listWidget.setStyleSheet("border:1px solid black;\n"
+        self.alarm_list = QtWidgets.QListWidget(self.tab_2)
+        self.alarm_list.setGeometry(QtCore.QRect(40, 80, 311, 371))
+        self.alarm_list.setStyleSheet("border:1px solid black;\n"
 "padding: 10px")
-        self.listWidget.setObjectName("listWidget")
+        self.alarm_list.setObjectName("alarm_list")
         self.label = QtWidgets.QLabel(self.tab_2)
         self.label.setGeometry(QtCore.QRect(150, 40, 81, 21))
         font = QtGui.QFont()
@@ -223,7 +223,7 @@ class Ui_MainWindow(object):
         self.lineEditPatientCode.setFrame(True)
         self.lineEditPatientCode.setEchoMode(QtWidgets.QLineEdit.Normal)
         self.lineEditPatientCode.setDragEnabled(False)
-        self.lineEditPatientCode.setReadOnly(False)
+        self.lineEditPatientCode.setReadOnly(True)
         self.lineEditPatientCode.setClearButtonEnabled(False)
         self.lineEditPatientCode.setObjectName("lineEditPatientCode")
         self.lineEditName = QtWidgets.QLineEdit(self.tab_3)
@@ -251,7 +251,7 @@ class Ui_MainWindow(object):
         self.textEditDisease.setGeometry(QtCore.QRect(115, 260, 241, 91))
         self.textEditDisease.setStyleSheet("border: 1px solid #888;\n"
 "background: #fff")
-        self.textEditDisease.setReadOnly(False)
+        self.textEditDisease.setReadOnly(True)
         self.textEditDisease.setObjectName("textEditDisease")
         self.label_10 = QtWidgets.QLabel(self.tab_3)
         self.label_10.setGeometry(QtCore.QRect(35, 210, 71, 16))
@@ -342,7 +342,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

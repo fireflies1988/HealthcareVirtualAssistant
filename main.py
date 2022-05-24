@@ -47,8 +47,10 @@ from twilio.rest import Client
 # and set the environment variables. See http://twil.io/secure
 # account_sid = os.environ['TWILIO_ACCOUNT_SID']
 # auth_token = os.environ['TWILIO_AUTH_TOKEN']
-account_sid='AC98b3f8f8743972146b1f706fcdd4cf63'
-auth_token='14f22c92a29e83fe060322687cb98d4f'
+account_sid = 'AC98b3f8f8743972146b1f706fcdd4cf63'
+auth_token = '14f22c92a29e83fe060322687cb98d4f'
+
+
 class SpeechRunnable(QRunnable):
     def __init__(self):
         super().__init__()
@@ -131,7 +133,7 @@ class ThreadClass2(QThread):
                     continue
 
                 if timeout is None:
-                    timeout = time.time() + 5
+                    timeout = time.time() + 15
 
                 if time.time() > timeout:
                     flag = False
@@ -167,13 +169,56 @@ class ThreadClass2(QThread):
                     to='+84386201456'
                 )
                 print(message1.body)
-            except Exception :
+            except Exception:
                 print("Sorry ! You are dividing by zero ")
 
     def stop(self):
         print('Stopping thread', self.index)
         self.arduino_data.close()
         self.terminate()
+
+
+class AlarmItem(QWidget):
+    def __init__(self, parent=None, alarm=None):
+        super(AlarmItem, self).__init__()
+        self.parent = parent
+        self.alarm = alarm
+        self.row = QHBoxLayout()
+        clock = QLabel("clock")
+        # clock.setGeometry(QtCore.QRect(10, 9, 31, 31))
+        clock.setText("")
+        clock.setPixmap(QtGui.QPixmap("icon/clock.png"))
+        clock.setAlignment(QtCore.Qt.AlignCenter)
+
+        pushButton = QtWidgets.QPushButton()
+        # pushButton.setGeometry(QtCore.QRect(240, 12, 31, 23))
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap("icon/close.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        pushButton.setIcon(icon2)
+        pushButton.clicked.connect(self.onClick)
+
+        self.row.addWidget(clock)
+        self.column = QVBoxLayout()
+        self.column.addWidget(QLabel(self.alarm.__get_time__()))
+        self.column.addWidget(QLabel(self.alarm.message))
+        self.row.addItem(self.column)
+        self.row.addWidget(pushButton)
+        self.setLayout(self.row)
+        # self.setStyleSheet("margin-bottom: 1px;\nborder:none;\npadding:0")
+        self.setStyleSheet(
+            "background: transparent;\nborder-radius: 10px;\nmargin-bottom: 1px;\nborder:none;\npadding:0")
+
+    def onClick(self):
+        print("clicked")
+        alarm_list = ReadWrite.readFile()
+        al = None
+        for a in alarm_list:
+            if a.uuid == self.alarm.uuid:
+                al = a
+                break
+        alarm_list.remove(al)
+        ReadWrite.writeFile(alarm_list)
+        self.parent.fill_alarm_list()
 
 
 class ThreadClass3(QThread):
@@ -246,6 +291,7 @@ class AlarmDialog(QDialog):
     def __init__(self, parent=None):
         super(AlarmDialog, self).__init__(parent)
         self.main_win = QDialog()
+        self.parent = parent
         self.uic = Ui_Dialog()
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.uic.setupUi(self)
@@ -263,6 +309,8 @@ class AlarmDialog(QDialog):
         alarm_list.append(alarm)
         ReadWrite.writeFile(alarm_list)
         print(len(alarm_list))
+        self.parent.fill_alarm_list()
+        self.close()
 
     def on_click_btn_cancel_set_alarm(self):
         self.close()
@@ -297,10 +345,36 @@ class MainWindow(QMainWindow):
         self.uic.weather_widget.hide()
         self.speechRunnable = SpeechRunnable()
 
+        # item1 = AlarmItem(self.uic.alarm_list)
+        # self.uic.alarm_list.addItem(item1)
+        # self.uic.alarm_list.addItem(item1)
+
+        self.fill_alarm_list()
+
         self.uic.btn_active.clicked.connect(
             lambda: self.speak("Hi, I'm your healthcare virtual assistant. \nWhat can I do for you?"))
         self.uic.btn_new_alarm.clicked.connect(self.on_click_btn_new_alarm)
         self.alarm_dialog = None
+        threading.Thread(target=introduce2, args={self}, daemon=True).start()
+        self.uic.alarm_list.setStyleSheet("QListWidget::item {"
+                                          "border:none;"
+                                          "background-color: white;"
+                                          "border-radius: 10px;"
+                                          "margin-bottom: 5px"
+                                          "}"
+                                          "QListWidget::item:selected {"
+                                          "background-color: #DDD;"
+                                          "}")
+
+    def fill_alarm_list(self):
+        self.uic.alarm_list.clear()
+        alarm_list = ReadWrite.readFile()
+        for alarm in alarm_list:
+            item = QListWidgetItem(self.uic.alarm_list)
+            self.uic.alarm_list.addItem(item)
+            row = AlarmItem(parent=self, alarm=alarm)
+            item.setSizeHint(row.minimumSizeHint())
+            self.uic.alarm_list.setItemWidget(item, row)
         threading.Thread(target=self.introduce2, daemon=True).start()
 
     def speak(self, text):
@@ -466,7 +540,7 @@ class MainWindow(QMainWindow):
         # threading.Thread(target=respond2(self, text), daemon=True).start()
 
     def on_click_btn_new_alarm(self):
-        dialog = AlarmDialog(self)
+        dialog = AlarmDialog(parent=self)
         dialog.exec_()
 
     def introduce2(self):
