@@ -44,7 +44,7 @@ outline:none;
 background: #F0F0F0;</string>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -458,7 +458,7 @@ padding: 10px</string>
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>140</x>
+        <x>150</x>
         <y>40</y>
         <width>81</width>
         <height>21</height>
@@ -771,6 +771,68 @@ background-color: #37455E;</string>
       <property name="text">
        <string>Update</string>
       </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_4">
+     <attribute name="title">
+      <string>History</string>
+     </attribute>
+     <widget class="QLabel" name="label_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>241</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Your measurement history</string>
+      </property>
+     </widget>
+     <widget class="QListWidget" name="listWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>371</width>
+        <height>411</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QListWidget::item {
+	background-color: #d9d9d9;
+	margin: 5px;
+	padding: 3px;
+	border-radius: 5px;
+}
+</string>
+      </property>
+      <item>
+       <property name="text">
+        <string>HR: 100 bpm, spo2: 98% | 5/24/2022 2:19 AM</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>HR: 100 bpm, spo2: 98% | 5/24/2022 2:19 AM</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>HR: 100 bpm, spo2: 98% | 5/24/2022 2:19 AM</string>
+       </property>
+      </item>
      </widget>
     </widget>
    </widget>

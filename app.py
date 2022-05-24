@@ -276,6 +276,34 @@ class Ui_MainWindow(object):
 "background-color: #37455E;")
         self.btnUpdate.setObjectName("btnUpdate")
         self.tabWidget.addTab(self.tab_3, "")
+        self.tab_4 = QtWidgets.QWidget()
+        self.tab_4.setObjectName("tab_4")
+        self.label_2 = QtWidgets.QLabel(self.tab_4)
+        self.label_2.setGeometry(QtCore.QRect(10, 10, 241, 31))
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.label_2.setFont(font)
+        self.label_2.setObjectName("label_2")
+        self.listWidget_2 = QtWidgets.QListWidget(self.tab_4)
+        self.listWidget_2.setGeometry(QtCore.QRect(10, 50, 371, 411))
+        font = QtGui.QFont()
+        font.setPointSize(9)
+        self.listWidget_2.setFont(font)
+        self.listWidget_2.setStyleSheet("QListWidget::item {\n"
+"    background-color: #d9d9d9;\n"
+"    margin: 5px;\n"
+"    padding: 3px;\n"
+"    border-radius: 5px;\n"
+"}\n"
+"")
+        self.listWidget_2.setObjectName("listWidget_2")
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget_2.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget_2.addItem(item)
+        item = QtWidgets.QListWidgetItem()
+        self.listWidget_2.addItem(item)
+        self.tabWidget.addTab(self.tab_4, "")
         self.btn_speak = QtWidgets.QPushButton(self.centralwidget)
         self.btn_speak.setGeometry(QtCore.QRect(165, 500, 60, 60))
         self.btn_speak.setLayoutDirection(QtCore.Qt.LeftToRight)
@@ -347,6 +375,17 @@ class Ui_MainWindow(object):
         self.radioButtonFemale.setText(_translate("MainWindow", "Female"))
         self.btnUpdate.setText(_translate("MainWindow", "Update"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Information"))
+        self.label_2.setText(_translate("MainWindow", "Your measurement history"))
+        __sortingEnabled = self.listWidget_2.isSortingEnabled()
+        self.listWidget_2.setSortingEnabled(False)
+        item = self.listWidget_2.item(0)
+        item.setText(_translate("MainWindow", "HR: 100 bpm, spo2: 98% | 5/24/2022 2:19 AM"))
+        item = self.listWidget_2.item(1)
+        item.setText(_translate("MainWindow", "HR: 100 bpm, spo2: 98% | 5/24/2022 2:19 AM"))
+        item = self.listWidget_2.item(2)
+        item.setText(_translate("MainWindow", "HR: 100 bpm, spo2: 98% | 5/24/2022 2:19 AM"))
+        self.listWidget_2.setSortingEnabled(__sortingEnabled)
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), _translate("MainWindow", "History"))
         self.ask_entry.setPlaceholderText(_translate("MainWindow", "Ask me"))
 
 
