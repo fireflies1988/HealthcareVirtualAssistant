@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>390</width>
-    <height>300</height>
+    <height>301</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,37 +36,6 @@
    </property>
    <property name="text">
     <string>Message</string>
-   </property>
-  </widget>
-  <widget class="QDateTimeEdit" name="alarm_time">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>90</y>
-     <width>194</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>Roboto</family>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">background: #fff</string>
-   </property>
-   <property name="dateTime">
-    <datetime>
-     <hour>7</hour>
-     <minute>0</minute>
-     <second>0</second>
-     <year>2022</year>
-     <month>5</month>
-     <day>22</day>
-    </datetime>
-   </property>
-   <property name="calendarPopup">
-    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLabel" name="label_2">
@@ -168,12 +137,39 @@ border-radius: 10px</string>
     </font>
    </property>
    <property name="styleSheet">
-    <string notr="true">background: white;
+    <string notr="true">background: #000;
+color: #fff;
 border: none;
 border-radius: 10px</string>
    </property>
    <property name="text">
     <string>OK</string>
+   </property>
+  </widget>
+  <widget class="QTimeEdit" name="alarm_time">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>90</y>
+     <width>118</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background:white</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="isOnce">
+   <property name="geometry">
+    <rect>
+     <x>180</x>
+     <y>91</y>
+     <width>70</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Once</string>
    </property>
   </widget>
  </widget>

@@ -44,7 +44,7 @@ outline:none;
 background: #F0F0F0;</string>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -458,7 +458,7 @@ padding: 10px</string>
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>150</x>
+        <x>140</x>
         <y>40</y>
         <width>81</width>
         <height>21</height>
