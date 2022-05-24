@@ -26,7 +26,18 @@ from firebase_database import *
 global command
 command = ""
 
+from sendmail import sendemail
 
+port = 465  # For SSL
+smtp_server = "smtp.gmail.com"
+sender_email = "n18dccn237java@gmail.com"  # Enter your address nqubjcnsenjyrppp
+receiver_email = "thienthien20221@gmail.com"  # Enter receiver addresspassword
+password = "dqocoxgxjylgooqg"
+# password = input("Type your password and press enter: ")
+message = """\
+Subject: Hi doctor
+
+Patient is showing signs of poor health. """
 class SpeechRunnable(QRunnable):
     def __init__(self):
         super().__init__()
@@ -135,6 +146,10 @@ class ThreadClass2(QThread):
         data = {"user": "temp", "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
                 "hr": avg_heart_rate, "spo2": raw_data[raw_data.__len__() - 1].spo2}
         db.child("MeasurementHistory").push(data)
+        if avg_heart_rate > 100 or raw_data[raw_data.__len__() - 1].spo2 <= 90:
+            sendemail(port, sender_email, receiver_email, password, message+ data)
+
+
 
     def stop(self):
         print('Stopping thread', self.index)

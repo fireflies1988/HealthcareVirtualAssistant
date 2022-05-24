@@ -11,18 +11,7 @@ import asyncio
 
 import virtual_assistant
 from SensorData import SensorData
-from sendmail import sendemail
 
-port = 465  # For SSL
-smtp_server = "smtp.gmail.com"
-sender_email = "n18dccn237java@gmail.com"  # Enter your address nqubjcnsenjyrppp
-receiver_email = "thienthien20221@gmail.com"  # Enter receiver addresspassword
-password = "dqocoxgxjylgooqg"
-# password = input("Type your password and press enter: ")
-message = """\
-Subject: Hi doctor
-
-Patient is showing signs of poor health. their heart rate is: """
 
 
 def init_sensor():
@@ -284,7 +273,7 @@ def measure_max30100_2(arduino_data, self):
     # self.speechRunnable.speak(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
 
 
-def measure_max30102(arduino_data):
+def     measure_max30102(arduino_data):
     raw_data = []
     flag = True
     timeout = None
@@ -352,8 +341,6 @@ def measure_max30102(arduino_data):
 
     virtual_assistant.speak(f"Your average heart rate is {raw_data[raw_data.__len__() - 1]} bpm")
     virtual_assistant.speak(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
-    if raw_data[raw_data.__len__() - 1] > 100 or raw_data[raw_data.__len__() - 1].spo2 <= 90 :
-        sendemail(port, sender_email, receiver_email, password, message+raw_data[raw_data.__len__() - 1] +" their spo2: "+ raw_data[raw_data.__len__() - 1].spo2)
 
 
 
