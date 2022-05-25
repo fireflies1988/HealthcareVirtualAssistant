@@ -3,7 +3,7 @@ import threading
 from pprint import pprint
 from tkinter import *
 
-
+from main import SpeechRunnable
 from virtual_assistant import speak
 
 import geocoder
@@ -147,11 +147,8 @@ def respond2(self, voice_data):
         my_location2()
 
     elif "bmi" in voice_data:  # calculate BMI index
-        h = record_audio2("Please tell me your height")
-        w = record_audio2("Please tell me your weight")
-        height = float(h)
-        weight = float(w)
-        bmi2(height, weight)
+        self.uic.tabWidget.setCurrentWidget(self.uic.tab_4)
+        self.speak("Please enter your height and weight to calculate the bmi index")
 
     elif "hospital" in voice_data:  # search for hospital nearby
         url = "https://google.com/search?q=hospital-near-me"
@@ -176,8 +173,6 @@ def respond2(self, voice_data):
     else:
         result = "Sorry, I'm not able to help with this one."
         change_bot_chat(self, result)
-
-
 
 
 def set_alarm(self, time):
@@ -261,22 +256,27 @@ def weather_scrapping2(self):
 
 def bmi2(self, height, weight):
     result = weight / (height * height)
+    status = ""
     if result < 16:
-        self.speechRunnable.speak('You are Severe thinness')
+        status = 'Severe thinness'
     elif result >= 16 & result < 17:
-        self.speechRunnable.speak('You are moderate thinness ')
+        status = 'moderate thinness '
     elif result >= 17 & result < 18.5:
-        self.speechRunnable.speak('You are thin')
+        status = 'thin'
     elif result >= 18.5 & result < 25:
-        self.speechRunnable.speak('You are normal')
+        status = 'normal'
     elif result >= 25 & result < 30:
-        self.speechRunnable.speak('You are overweight')
+        status = 'overweight'
     elif result >= 30 & result < 35:
-        self.speechRunnable.speak('You are Obese type 1')
+        status = 'Obese type 1'
     elif result >= 35 & result < 40:
-        self.speechRunnable.speak('You are Obese type 2')
+        status = 'Obese type 2'
     else:
-        self.speechRunnable.speak('You are Obese type 3')
+        status = 'Obese type 3'
+
+    self.uic.label_status.setText("You are: " + status)
+    self.uic.label_bmi_inde.setText("Your BMI Index: " + str(result))
+    self.speak("You are in " + status + " status")
 
 
 def weather2(self):

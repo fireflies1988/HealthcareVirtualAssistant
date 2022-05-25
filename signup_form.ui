@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>icon/logo.png</normaloff>icon/logo.png</iconset>
+    <normaloff>icon/add-user.png</normaloff>icon/add-user.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">background : #363636;</string>
