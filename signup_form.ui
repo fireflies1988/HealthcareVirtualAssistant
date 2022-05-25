@@ -241,8 +241,43 @@ border: 1px solid rgb(243,243,243);</string>
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
+   <widget class="QPushButton" name="btnback">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>10</y>
+      <width>61</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: transparent;</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../../Users/PC/Downloads/previous (1).png</normaloff>../../Users/PC/Downloads/previous (1).png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>32</width>
+      <height>32</height>
+     </size>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionBack">
+   <property name="icon">
+    <iconset>
+     <normaloff>../../Users/PC/Pictures/423-4237996_return-svg-png-icon-free-download-onlinewebfonts-return-back-icon.png</normaloff>../../Users/PC/Pictures/423-4237996_return-svg-png-icon-free-download-onlinewebfonts-return-back-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Back</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
