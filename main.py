@@ -11,6 +11,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 import ReadWrite
+import ReadWriteKey
 import account
 import firebase_database
 import prompt_dialog
@@ -143,7 +144,7 @@ class ThreadClass2(QThread):
                     continue
 
                 if timeout is None:
-                    timeout = time.time() + 5
+                    timeout = time.time() + 15
 
                 if time.time() > timeout:
                     flag = False
@@ -163,7 +164,7 @@ class ThreadClass2(QThread):
         avg_heart_rate = int(sum_heart_rate / raw_data.__len__())
 
         self.heart_rate_signal.emit(f"Your average heart rate is {avg_heart_rate} bpm")
-        self.spo2_signal.emit(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
+        self.spo2_signal.emit(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2}%")
 
         # save data to firebase database
         data = {"user": "temp", "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
@@ -501,10 +502,12 @@ class MainWindow(QMainWindow):
         self.fill_alarm_list()
 
     def goto_signin(self):
-        # signInForm = SignInForm()
-        # signInForm.show()
-        # self.main_win.close()
-        self.showSignInForm()
+        ReadWriteKey.writeFile("")
+        self.main_win.close()
+        self.sub_win = QMainWindow()
+        self.uic1 = signin_form.Ui_MainWindow()
+        self.uic1.setupUi(self.sub_win)
+        self.sub_win.show()
 
     def speak(self, text):
         if self.is_speaking:
@@ -517,32 +520,32 @@ class MainWindow(QMainWindow):
         self.thread[4].start()
 
     def on_btn_summit_click(self):
-        height = int(self.uic.edit_height.text())
-        weight = int(self.uic.edit_height.text())
+        height = float(self.uic.edit_height.text())
+        weight = int(self.uic.edit_weight.text())
         self.bmi2(height=height, weight=weight)
 
     def bmi2(self, height, weight):
         result = weight / (height * height)
         status = ""
-        if result < 16:
+        if result < 16.0:
             status = 'Severe thinness'
-        elif result >= 16 & result < 17:
+        elif result >= 16.0 & result < 17.0:
             status = 'moderate thinness '
-        elif result >= 17 & result < 18.5:
+        elif result >= 17.0 & result < 18.5:
             status = 'thin'
-        elif result >= 18.5 & result < 25:
+        elif result >= 18.5 & result < 25.0:
             status = 'normal'
-        elif result >= 25 & result < 30:
+        elif result >= 25.0 & result < 30.0:
             status = 'overweight'
-        elif result >= 30 & result < 35:
+        elif result >= 30.0 & result < 35.0:
             status = 'Obese type 1'
-        elif result >= 35 & result < 40:
+        elif result >= 35.0 & result < 40.0:
             status = 'Obese type 2'
         else:
             status = 'Obese type 3'
 
         self.uic.label_status.setText("You are: " + status)
-        self.uic.label_bmi_index.setText("Your BMI Index: " + str(result))
+        self.uic.label_bmi_index.setText("Your BMI Index: " + str(round(result, 1)))
         self.speak("You are in " + status + " status")
 
     def measureHeartRate(self):
@@ -735,17 +738,19 @@ class SignInForm(QMainWindow):
             mainWindow = MainWindow()
             mainWindow.show()
             self.main_win.close()
+            ReadWriteKey.writeFile(key=ref['localId'])
+
         except Exception as e:
             self.uic.invalid.setVisible(True)
 
     def goto_create(self):
+        print("tsign up")
         self.showSignUpForm()
 
     def showSignUpForm(self):
-        self.main_win.close()
         self.sub_win = QMainWindow()
         self.uic1 = signup_form.Ui_MainWindow()
-        self.uic1.setupUi(self.sub_win)
+        self.uic1.setupUi(self)
         self.sub_win.show()
 
     def show(self):
@@ -765,9 +770,7 @@ class SignUpForm(QMainWindow):
         self.uic.invalid.setVisible(False)
 
     def goto_signin(self):
-        # signInForm = SignInForm()
-        # signInForm.show()
-        # self.main_win.close()
+        print("sign in")
         self.showSignInForm()
 
     def create_acc_function(self):
@@ -795,13 +798,20 @@ class SignUpForm(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
+    access = ReadWriteKey.checkFile()
+    main_win = None
+    if access:
+        main_win = MainWindow()
+    else:
+        main_win = SignInForm()
     # main_win = MainWindow()
     # main_win.show()
-    signInForm = SignInForm()
-    signInForm.show()
-    # main_win = MainWindow()
-    # main_win.show()
+    main_win.show()
     sys.exit(app.exec())
+    # app = QApplication([SignInForm, SignUpForm, MainWindow])
+    # gui = SignInForm()
+    # gui.show()
+    # app.exec_()
 
 
 if __name__ == "__main__":
