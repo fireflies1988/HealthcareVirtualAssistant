@@ -39,11 +39,8 @@ class Login(QDialog):
         email = self.uic.email.text()
         password = self.uic.password.text()
         try:
-            global uid
-
             ref = auth.sign_in_with_email_and_password(email, password)
             print(ref['localId'])
-            uid = ref['localId']
             self.parent = self.parent()
             self.parent.show()
         except Exception as e:

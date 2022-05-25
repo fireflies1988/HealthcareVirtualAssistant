@@ -339,9 +339,7 @@ class MainWindow(QMainWindow):
         self.uic.btnSignout.clicked.connect(self.goto_signin)
         self.uic.tabWidget.tabBarClicked.connect(self.get_measurement_history_data)
 
-
-
-        self.uic.lineEditPatientCode.setText(account.uid)
+        self.uic.lineEditPatientCode.setText("patientcode")
         self.uic.lineEditName.setText("name")
         self.uic.radioButtonMale.setChecked(True)
 
