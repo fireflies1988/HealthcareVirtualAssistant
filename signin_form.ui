@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Sign In</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icon/log-in.png</normaloff>icon/log-in.png</iconset>
+  </property>
   <property name="styleSheet">
    <string notr="true">background : #363636;</string>
   </property>
