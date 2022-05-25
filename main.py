@@ -501,9 +501,10 @@ class MainWindow(QMainWindow):
         self.fill_alarm_list()
 
     def goto_signin(self):
-        signInForm = SignInForm()
-        signInForm.show()
-        self.main_win.close()
+        # signInForm = SignInForm()
+        # signInForm.show()
+        # self.main_win.close()
+        self.showSignInForm()
 
     def speak(self, text):
         if self.is_speaking:
