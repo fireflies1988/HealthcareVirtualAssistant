@@ -10,10 +10,13 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 import ReadWrite
+import account
 import firebase_database
+import signin_form
+import signup_form
 from ReadWrite import Alarm
 from SensorData import SensorData
-from app import Ui_MainWindow
+from account import Login
 # from virtual_assistant import introduce
 from sensor import read_sensor
 from virtual_assistant import speak
@@ -23,16 +26,21 @@ import speech_recognition as sr
 import playsound
 from PyQt5 import QtCore, QtGui, QtWidgets
 from firebase_database import *
+from app import Ui_MainWindow
 import pyrebase
+
 global command
 command = ""
 import account
 from sendmail import sendemail
 
+# from account import Login
+# from account import CreateAcc
+
 port = 465  # For SSL
 smtp_server = "smtp.gmail.com"
 sender_email = "n18dccn237java@gmail.com"  # Enter your address nqubjcnsenjyrppp
-receiver_email = "thienthien20221@gmail.com"  # Enter receiver addresspassword
+receiver_email = "n18dccn146@gmail.com"  # Enter receiver addresspassword
 password = "dqocoxgxjylgooqg"
 # password = input("Type your password and press enter: ")
 message = """\
@@ -42,13 +50,14 @@ Patient is showing signs of poor health. """
 
 from twilio.rest import Client
 
-
 # Find your Account SID and Auth Token at twilio.com/console
 # and set the environment variables. See http://twil.io/secure
 # account_sid = os.environ['TWILIO_ACCOUNT_SID']
 # auth_token = os.environ['TWILIO_AUTH_TOKEN']
-account_sid='AC98b3f8f8743972146b1f706fcdd4cf63'
-auth_token='14f22c92a29e83fe060322687cb98d4f'
+account_sid = 'AC98b3f8f8743972146b1f706fcdd4cf63'
+auth_token = '14f22c92a29e83fe060322687cb98d4f'
+
+
 class SpeechRunnable(QRunnable):
     def __init__(self):
         super().__init__()
@@ -131,7 +140,7 @@ class ThreadClass2(QThread):
                     continue
 
                 if timeout is None:
-                    timeout = time.time() + 5
+                    timeout = time.time() + 15
 
                 if time.time() > timeout:
                     flag = False
@@ -167,13 +176,56 @@ class ThreadClass2(QThread):
                     to='+84386201456'
                 )
                 print(message1.body)
-            except Exception :
+            except Exception:
                 print("Sorry ! You are dividing by zero ")
 
     def stop(self):
         print('Stopping thread', self.index)
         self.arduino_data.close()
         self.terminate()
+
+
+class AlarmItem(QWidget):
+    def __init__(self, parent=None, alarm=None):
+        super(AlarmItem, self).__init__()
+        self.parent = parent
+        self.alarm = alarm
+        self.row = QHBoxLayout()
+        clock = QLabel("clock")
+        # clock.setGeometry(QtCore.QRect(10, 9, 31, 31))
+        clock.setText("")
+        clock.setPixmap(QtGui.QPixmap("icon/clock.png"))
+        clock.setAlignment(QtCore.Qt.AlignCenter)
+
+        pushButton = QtWidgets.QPushButton()
+        # pushButton.setGeometry(QtCore.QRect(240, 12, 31, 23))
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap("icon/close.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        pushButton.setIcon(icon2)
+        pushButton.clicked.connect(self.onClick)
+
+        self.row.addWidget(clock)
+        self.column = QVBoxLayout()
+        self.column.addWidget(QLabel(self.alarm.__get_time__()))
+        self.column.addWidget(QLabel(self.alarm.message))
+        self.row.addItem(self.column)
+        self.row.addWidget(pushButton)
+        self.setLayout(self.row)
+        # self.setStyleSheet("margin-bottom: 1px;\nborder:none;\npadding:0")
+        self.setStyleSheet(
+            "background: transparent;\nborder-radius: 10px;\nmargin-bottom: 1px;\nborder:none;\npadding:0")
+
+    def onClick(self):
+        print("clicked")
+        alarm_list = ReadWrite.readFile()
+        al = None
+        for a in alarm_list:
+            if a.uuid == self.alarm.uuid:
+                al = a
+                break
+        alarm_list.remove(al)
+        ReadWrite.writeFile(alarm_list)
+        self.parent.fill_alarm_list()
 
 
 class ThreadClass3(QThread):
@@ -246,6 +298,7 @@ class AlarmDialog(QDialog):
     def __init__(self, parent=None):
         super(AlarmDialog, self).__init__(parent)
         self.main_win = QDialog()
+        self.parent = parent
         self.uic = Ui_Dialog()
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.uic.setupUi(self)
@@ -263,6 +316,8 @@ class AlarmDialog(QDialog):
         alarm_list.append(alarm)
         ReadWrite.writeFile(alarm_list)
         print(len(alarm_list))
+        self.parent.fill_alarm_list()
+        self.close()
 
     def on_click_btn_cancel_set_alarm(self):
         self.close()
@@ -281,6 +336,7 @@ class MainWindow(QMainWindow):
         self.is_speaking = False
         self.uic.btn_speak.clicked.connect(self.on_click_speak_button)
         self.uic.btnUpdate.clicked.connect(self.updatePatient)
+        self.uic.btnSignout.clicked.connect(self.goto_signin)
         self.uic.tabWidget.tabBarClicked.connect(self.get_measurement_history_data)
 
 
@@ -298,11 +354,42 @@ class MainWindow(QMainWindow):
         self.uic.weather_widget.hide()
         self.speechRunnable = SpeechRunnable()
 
+        # item1 = AlarmItem(self.uic.alarm_list)
+        # self.uic.alarm_list.addItem(item1)
+        # self.uic.alarm_list.addItem(item1)
+
+        self.fill_alarm_list()
+
         self.uic.btn_active.clicked.connect(
             lambda: self.speak("Hi, I'm your healthcare virtual assistant. \nWhat can I do for you?"))
         self.uic.btn_new_alarm.clicked.connect(self.on_click_btn_new_alarm)
         self.alarm_dialog = None
         threading.Thread(target=self.introduce2, daemon=True).start()
+        self.uic.alarm_list.setStyleSheet("QListWidget::item {"
+                                          "border:none;"
+                                          "background-color: white;"
+                                          "border-radius: 10px;"
+                                          "margin-bottom: 5px"
+                                          "}"
+                                          "QListWidget::item:selected {"
+                                          "background-color: #DDD;"
+                                          "}")
+
+    def fill_alarm_list(self):
+        self.uic.alarm_list.clear()
+        alarm_list = ReadWrite.readFile()
+        for alarm in alarm_list:
+            item = QListWidgetItem(self.uic.alarm_list)
+            self.uic.alarm_list.addItem(item)
+            row = AlarmItem(parent=self, alarm=alarm)
+            item.setSizeHint(row.minimumSizeHint())
+            self.uic.alarm_list.setItemWidget(item, row)
+        threading.Thread(target=self.introduce2, daemon=True).start()
+
+    def goto_signin(self):
+        signInForm = SignInForm()
+        signInForm.show()
+        self.main_win.close()
 
     def speak(self, text):
         if self.is_speaking:
@@ -392,7 +479,7 @@ class MainWindow(QMainWindow):
         patient = database.child("PatientInformation").child(code).get()
         print(patient)
 
-        if patient.val()!="" or patient.val()!= None:
+        if patient.val() != "" or patient.val() != None:
             print("exist")
             database.child("PatientInformation").child(code).update(data)
         else:
@@ -467,7 +554,7 @@ class MainWindow(QMainWindow):
         # threading.Thread(target=respond2(self, text), daemon=True).start()
 
     def on_click_btn_new_alarm(self):
-        dialog = AlarmDialog(self)
+        dialog = AlarmDialog(parent=self)
         dialog.exec_()
 
     def introduce2(self):
@@ -477,10 +564,89 @@ class MainWindow(QMainWindow):
         self.speechRunnable.speak("Hi, I'm your healthcare virtual assistant. What can I do for you?")
 
 
+class SignInForm(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.main_win = QMainWindow()
+        self.uic = signin_form.Ui_MainWindow()
+        self.uic.setupUi(self.main_win)
+        self.uic.password.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.uic.loginbutton.clicked.connect(self.login_function)
+        self.uic.createaccbutton.clicked.connect(self.goto_create)
+        self.uic.invalid.setVisible(False)
+
+    def login_function(self):
+        email = self.uic.email.text()
+        user_password = self.uic.password.text()
+        try:
+            ref = account.auth.sign_in_with_email_and_password(email, user_password)
+            print(ref['localId'])
+            mainWindow = MainWindow()
+            mainWindow.show()
+            self.main_win.close()
+
+
+
+
+        except Exception as e:
+            self.uic.invalid.setVisible(True)
+
+    def goto_create(self):
+        signUpForm = SignUpForm()
+        signUpForm.show()
+        self.main_win.close()
+        # widget.addWidget(createAcc)
+        # widget.setCurrentIndex(widget.currentIndex() + 1)
+
+
+
+    def show(self):
+        self.main_win.show()
+
+
+class SignUpForm(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.main_win = QMainWindow()
+        self.uic = signup_form.Ui_MainWindow()
+        self.uic.setupUi(self.main_win)
+        self.uic.signupbutton.clicked.connect(self.create_acc_function)
+        self.uic.password.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.uic.confirmpass.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.uic.btnback.clicked.connect(self.goto_signin)
+        self.uic.invalid.setVisible(False)
+
+    def goto_signin(self):
+        signInForm = SignInForm()
+        signInForm.show()
+        self.main_win.close()
+
+    def create_acc_function(self):
+        email = self.uic.email.text()
+        if self.uic.password.text() == self.uic.confirmpass.text():
+            user_password = self.uic.password.text()
+            try:
+                account.auth.create_user_with_email_and_password(email, user_password)
+                login = Login()
+                login.exec_()
+                self.main_win.close()
+                # widget.addWidget(login)
+                # widget.setCurrentIndex(widget.currentIndex() + 1)
+            except:
+                self.uic.invalid.setVisible(True)
+
+    def show(self):
+        self.main_win.show()
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    main_win = MainWindow()
-    main_win.show()
+    # main_win = MainWindow()
+    # main_win.show()
+    signInForm = SignInForm()
+    signInForm.show()
+    # main_win = MainWindow()
+    # main_win.show()
     sys.exit(app.exec())
 
 # if __name__ == "__main__":

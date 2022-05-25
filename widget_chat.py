@@ -14,22 +14,30 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(283, 51)
-        self.chat_bot_widget = QtWidgets.QWidget(Form)
-        self.chat_bot_widget.setGeometry(QtCore.QRect(0, 0, 281, 51))
-        self.chat_bot_widget.setObjectName("chat_bot_widget")
-        self.chat_bot = QtWidgets.QLabel(self.chat_bot_widget)
-        self.chat_bot.setGeometry(QtCore.QRect(50, 5, 231, 41))
-        self.chat_bot.setStyleSheet("background: rgb(255, 255, 255);\n"
-"border-radius: 10px;\n"
-"padding-left: 10px")
-        self.chat_bot.setObjectName("chat_bot")
-        self.label_7 = QtWidgets.QLabel(self.chat_bot_widget)
-        self.label_7.setGeometry(QtCore.QRect(10, 10, 31, 31))
-        self.label_7.setText("")
-        self.label_7.setPixmap(QtGui.QPixmap("icon/bot.png"))
-        self.label_7.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_7.setObjectName("label_7")
+        Form.resize(280, 51)
+        self.alarm_widget_item = QtWidgets.QWidget(Form)
+        self.alarm_widget_item.setGeometry(QtCore.QRect(0, 0, 281, 51))
+        self.alarm_widget_item.setStyleSheet("background: white;\n"
+"border-radius: 10px")
+        self.alarm_widget_item.setObjectName("alarm_widget_item")
+        self.chat_bot_2 = QtWidgets.QLabel(self.alarm_widget_item)
+        self.chat_bot_2.setGeometry(QtCore.QRect(56, 13, 101, 21))
+        self.chat_bot_2.setStyleSheet("")
+        self.chat_bot_2.setObjectName("chat_bot_2")
+        self.label_12 = QtWidgets.QLabel(self.alarm_widget_item)
+        self.label_12.setGeometry(QtCore.QRect(10, 9, 31, 31))
+        self.label_12.setText("")
+        self.label_12.setPixmap(QtGui.QPixmap("icon/clock.png"))
+        self.label_12.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_12.setObjectName("label_12")
+        self.pushButton = QtWidgets.QPushButton(self.alarm_widget_item)
+        self.pushButton.setGeometry(QtCore.QRect(240, 12, 31, 23))
+        self.pushButton.setStyleSheet("border: none")
+        self.pushButton.setText("")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("icon/close.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButton.setIcon(icon)
+        self.pushButton.setObjectName("pushButton")
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
@@ -37,7 +45,7 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.chat_bot.setText(_translate("Form", "It\'s 9:00 pm"))
+        self.chat_bot_2.setText(_translate("Form", "It\'s 9:00 pm"))
 
 
 if __name__ == "__main__":
