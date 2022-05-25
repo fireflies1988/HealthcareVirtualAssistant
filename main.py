@@ -35,7 +35,7 @@ logger = logging.getLogger('firebase')
 
 global command
 command = ""
-
+import account
 from sendmail import sendemail
 
 # from account import Login
@@ -60,7 +60,6 @@ from twilio.rest import Client
 # auth_token = os.environ['TWILIO_AUTH_TOKEN']
 account_sid = 'AC98b3f8f8743972146b1f706fcdd4cf63'
 auth_token = '14f22c92a29e83fe060322687cb98d4f'
-
 
 class SpeechRunnable(QRunnable):
     def __init__(self):
@@ -410,13 +409,28 @@ class MainWindow(QMainWindow):
         # self.uic.tabWidget.tabBarClicked.connect(self.get_measurement_history_data)
         self.get_measurement_history_data()
 
-        self.uic.lineEditPatientCode.setText("patientcode")
-        self.uic.lineEditName.setText("name")
-        self.uic.radioButtonMale.setChecked(True)
+        ref = account.auth.sign_in_with_email_and_password(email, user_password)
 
-        self.uic.lineEditPhone.setText("0158181858")
-        self.uic.textEditDisease.setText("ooooo\naaaaaa")
+        code = ref['localId']
+        self.uic.lineEditPatientCode.setText(code)
 
+        firebase = pyrebase.initialize_app(firebase_database.firebaseConfig)
+        database = firebase.database()
+        patient = database.child("PatientInformation").child(code).get()
+        patient = patient.val()
+        try:
+            self.uic.lineEditName.setText(patient['patientName'])
+            if patient['patientSex'] == "Male":
+                self.uic.radioButtonMale.setChecked(True)
+            else:
+                self.uic.radioButtonFemale.setChecked(True)
+            self.uic.lineEditPhone.setText(patient['patientPhone'])
+            self.uic.textEditDisease.setText(patient['patientDisease'])
+        except Exception as ex:
+            self.uic.lineEditName.setText("")
+            self.uic.radioButtonMale.setChecked(True)
+            self.uic.lineEditPhone.setText("")
+            self.uic.textEditDisease.setText("")
         self.uic.btn_active.hide()
         self.uic.screen.hide()
         self.uic.btn_send.clicked.connect(self.on_click_send)
@@ -710,6 +724,8 @@ class SignInForm(QMainWindow):
         self.uic.invalid.setVisible(False)
 
     def login_function(self):
+        global email
+        global user_password
         email = self.uic.email.text()
         user_password = self.uic.password.text()
         try:
@@ -718,7 +734,6 @@ class SignInForm(QMainWindow):
             mainWindow = MainWindow()
             mainWindow.show()
             self.main_win.close()
-
         except Exception as e:
             self.uic.invalid.setVisible(True)
 
