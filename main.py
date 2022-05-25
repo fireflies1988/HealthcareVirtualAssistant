@@ -408,7 +408,6 @@ class MainWindow(QMainWindow):
         self.uic.btnUpdate.clicked.connect(self.updatePatient)
         self.uic.btnSignout.clicked.connect(self.goto_signin)
         # self.uic.tabWidget.tabBarClicked.connect(self.get_measurement_history_data)
-        self.get_measurement_history_data()
 
         global accessKey
         print("accessKey: " + accessKey)
@@ -419,6 +418,7 @@ class MainWindow(QMainWindow):
             accessKey = ref['localId']
             print("accessKey: " + accessKey)
         self.uic.lineEditPatientCode.setText(code)
+        self.get_measurement_history_data()
 
         firebase = pyrebase.initialize_app(firebase_database.firebaseConfig)
         database = firebase.database()
