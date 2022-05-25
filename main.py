@@ -705,9 +705,6 @@ class SignInForm(QMainWindow):
             mainWindow.show()
             self.main_win.close()
 
-
-
-
         except Exception as e:
             self.uic.invalid.setVisible(True)
 
@@ -720,8 +717,6 @@ class SignInForm(QMainWindow):
         self.uic1 = signup_form.Ui_MainWindow()
         self.uic1.setupUi(self.sub_win)
         self.sub_win.show()
-
-
 
     def show(self):
         self.main_win.show()
@@ -740,9 +735,10 @@ class SignUpForm(QMainWindow):
         self.uic.invalid.setVisible(False)
 
     def goto_signin(self):
-        signInForm = SignInForm()
-        signInForm.show()
-        self.main_win.close()
+        # signInForm = SignInForm()
+        # signInForm.show()
+        # self.main_win.close()
+        self.showSignInForm()
 
     def create_acc_function(self):
         email = self.uic.email.text()
@@ -769,10 +765,10 @@ class SignUpForm(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    main_win = MainWindow()
-    main_win.show()
-    # signInForm = SignInForm()
-    # signInForm.show()
+    # main_win = MainWindow()
+    # main_win.show()
+    signInForm = SignInForm()
+    signInForm.show()
     # main_win = MainWindow()
     # main_win.show()
     sys.exit(app.exec())
