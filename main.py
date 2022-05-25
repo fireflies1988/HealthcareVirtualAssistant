@@ -167,7 +167,7 @@ class ThreadClass2(QThread):
         self.spo2_signal.emit(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2}%")
 
         # save data to firebase database
-        data = {"user": ref['localId'], "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+        data = {"user": accessKey, "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
                 "hr": avg_heart_rate, "spo2": raw_data[raw_data.__len__() - 1].spo2}
         db.child("MeasurementHistory").push(data)
         # reload measurement history
@@ -410,11 +410,14 @@ class MainWindow(QMainWindow):
         # self.uic.tabWidget.tabBarClicked.connect(self.get_measurement_history_data)
         self.get_measurement_history_data()
 
-        print(accessKey)
+        global accessKey
+        print("accessKey: " + accessKey)
         if access:
             code = accessKey
         else:
             code = ref['localId']
+            accessKey = ref['localId']
+            print("accessKey: " + accessKey)
         self.uic.lineEditPatientCode.setText(code)
 
         firebase = pyrebase.initialize_app(firebase_database.firebaseConfig)
@@ -522,9 +525,12 @@ class MainWindow(QMainWindow):
         self.thread[4].start()
 
     def on_btn_summit_click(self):
-        height = float(self.uic.edit_height.text())
-        weight = int(self.uic.edit_weight.text())
-        self.bmi2(height=height, weight=weight)
+        try:
+            height = float(self.uic.edit_height.text())
+            weight = int(self.uic.edit_weight.text())
+            self.bmi2(height=height, weight=weight)
+        except Exception as e:
+            logger.error(str(e))
 
     def bmi2(self, height, weight):
         result = weight / (height * height)
@@ -550,7 +556,8 @@ class MainWindow(QMainWindow):
         self.uic.label_bmi_index.setText("Your BMI Index: " + str(round(result, 1)))
 
         # save data to firebase database
-        data = {"user": ref['localId'], "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+        print(accessKey)
+        data = {"user": accessKey, "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
                 "bmi": str(result), "status": status}
         db.child("MeasurementHistory").push(data)
         # reload measurement history
@@ -673,9 +680,9 @@ class MainWindow(QMainWindow):
         # if index == 3:
         self.uic.listWidget_history.clear()
         try:
-            temp = db.child("MeasurementHistory").get().val()
-            # temp = firebase2.get('/MeasurementHistory', name=None, connection=None,
-            #                      params={"orderBy": '"hr"', "limitToLast": 10})
+            # temp = db.child("MeasurementHistory").order_by_child("user").equal_to("saf").get().val()
+            temp = firebase2.get('/MeasurementHistory', name=None, connection=None,
+                                 params={"orderBy": '"user"', "limitToLast": 20, "equalTo": '"' + accessKey + '"'})
             data = []
             for d in temp:
                 data.append(d)
@@ -821,9 +828,11 @@ def main():
     access = ReadWriteKey.checkFile()
     global accessKey
     accessKey = ReadWriteKey.readFile()
+    global mainWindow
     main_win = None
     if access:
         main_win = MainWindow()
+        mainWindow = main_win
     else:
         main_win = SignInForm()
     # main_win = MainWindow()
