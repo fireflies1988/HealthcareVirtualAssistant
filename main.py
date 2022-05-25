@@ -166,11 +166,11 @@ class ThreadClass2(QThread):
         self.spo2_signal.emit(f"Your spo2 is {raw_data[raw_data.__len__() - 1].spo2} percent")
 
         # save data to firebase database
-        data = {"user": "temp", "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+        data = {"user": ref['localId'], "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
                 "hr": avg_heart_rate, "spo2": raw_data[raw_data.__len__() - 1].spo2}
         db.child("MeasurementHistory").push(data)
         # reload measurement history
-        MainWindow.get_measurement_history_data()
+        mainWindow.get_measurement_history_data()
 
         if int(avg_heart_rate) > 100 or int(raw_data[raw_data.__len__() - 1].spo2) <= 90:
             try:
@@ -409,8 +409,6 @@ class MainWindow(QMainWindow):
         # self.uic.tabWidget.tabBarClicked.connect(self.get_measurement_history_data)
         self.get_measurement_history_data()
 
-        ref = account.auth.sign_in_with_email_and_password(email, user_password)
-
         code = ref['localId']
         self.uic.lineEditPatientCode.setText(code)
 
@@ -542,6 +540,14 @@ class MainWindow(QMainWindow):
 
         self.uic.label_status.setText("You are: " + status)
         self.uic.label_bmi_index.setText("Your BMI Index: " + str(result))
+
+        # save data to firebase database
+        data = {"user": ref['localId'], "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                "bmi": str(result), "status": status}
+        db.child("MeasurementHistory").push(data)
+        # reload measurement history
+        mainWindow.get_measurement_history_data()
+
         self.speak("You are in " + status + " status")
 
     def measureHeartRate(self):
@@ -667,11 +673,18 @@ class MainWindow(QMainWindow):
                 data.append(d)
             for d in data[::-1]:
                 date = temp[d]['date']
-                hr = temp[d]['hr']
-                spo2 = temp[d]['spo2']
-                item = QListWidgetItem()
-                self.uic.listWidget_history.addItem(item)
-                item.setText("HR: {} bpm, SPO2: {}% | {}".format(hr, spo2, date))
+                try:
+                    hr = temp[d]['hr']
+                    spo2 = temp[d]['spo2']
+                    item = QListWidgetItem()
+                    self.uic.listWidget_history.addItem(item)
+                    item.setText("HR: {} bpm, SPO2: {}% | {}".format(hr, spo2, date))
+                except Exception as e:
+                    bmi = temp[d]['bmi']
+                    status = temp[d]['status']
+                    item = QListWidgetItem()
+                    self.uic.listWidget_history.addItem(item)
+                    item.setText("BMI: {}, Status: {} | {}".format(bmi, status, date))
         except Exception as e:
             logger.error(str(e))
 
@@ -726,6 +739,8 @@ class SignInForm(QMainWindow):
     def login_function(self):
         global email
         global user_password
+        global mainWindow
+        global ref
         email = self.uic.email.text()
         user_password = self.uic.password.text()
         try:
