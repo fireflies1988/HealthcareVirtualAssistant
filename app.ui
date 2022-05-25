@@ -44,7 +44,7 @@ outline:none;
 background: #F0F0F0;</string>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -213,7 +213,7 @@ border-radius:10px</string>
        </property>
        <property name="font">
         <font>
-         <family>Roboto</family>
+         <family>Roboto Medium</family>
          <pointsize>10</pointsize>
         </font>
        </property>
@@ -241,7 +241,7 @@ border-radius:10px</string>
        </property>
        <property name="font">
         <font>
-         <family>Roboto</family>
+         <family>Roboto Medium</family>
          <pointsize>10</pointsize>
         </font>
        </property>
@@ -437,260 +437,6 @@ border-radius:10px</string>
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="tab_4">
-     <attribute name="title">
-      <string>BMI</string>
-     </attribute>
-     <widget class="QLabel" name="label_12">
-      <property name="geometry">
-       <rect>
-        <x>28</x>
-        <y>90</y>
-        <width>71</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Your Height:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="edit_height">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>79</y>
-        <width>140</width>
-        <height>40</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Roboto</family>
-        <pointsize>8</pointsize>
-       </font>
-      </property>
-      <property name="autoFillBackground">
-       <bool>false</bool>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border: none;
-background: #fff;
-border-radius: 10px;
-padding: 0 10px 0 10px</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="frame">
-       <bool>true</bool>
-      </property>
-      <property name="echoMode">
-       <enum>QLineEdit::Normal</enum>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-      <property name="dragEnabled">
-       <bool>false</bool>
-      </property>
-      <property name="readOnly">
-       <bool>false</bool>
-      </property>
-      <property name="placeholderText">
-       <string>(m)</string>
-      </property>
-      <property name="clearButtonEnabled">
-       <bool>false</bool>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_13">
-      <property name="geometry">
-       <rect>
-        <x>28</x>
-        <y>162</y>
-        <width>71</width>
-        <height>16</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Your Weight:</string>
-      </property>
-     </widget>
-     <widget class="QLineEdit" name="edit_weight">
-      <property name="geometry">
-       <rect>
-        <x>110</x>
-        <y>150</y>
-        <width>140</width>
-        <height>40</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Roboto</family>
-        <pointsize>8</pointsize>
-       </font>
-      </property>
-      <property name="autoFillBackground">
-       <bool>false</bool>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border: none;
-background: #fff;
-border-radius: 10px;
-padding: 0 10px 0 10px</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="frame">
-       <bool>true</bool>
-      </property>
-      <property name="echoMode">
-       <enum>QLineEdit::Normal</enum>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-      <property name="dragEnabled">
-       <bool>false</bool>
-      </property>
-      <property name="readOnly">
-       <bool>false</bool>
-      </property>
-      <property name="placeholderText">
-       <string>(kg)</string>
-      </property>
-      <property name="clearButtonEnabled">
-       <bool>false</bool>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_3">
-      <property name="geometry">
-       <rect>
-        <x>150</x>
-        <y>30</y>
-        <width>81</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Roboto</family>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">size: 16px;</string>
-      </property>
-      <property name="text">
-       <string>BMI Index</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="btn_submit">
-      <property name="geometry">
-       <rect>
-        <x>290</x>
-        <y>120</y>
-        <width>75</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Roboto</family>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background: #000;
-color: #fff;
-border: none;
-border-radius: 10px</string>
-      </property>
-      <property name="text">
-       <string>Submit</string>
-      </property>
-     </widget>
-     <widget class="QWidget" name="widget" native="true">
-      <property name="geometry">
-       <rect>
-        <x>19</x>
-        <y>269</y>
-        <width>351</width>
-        <height>151</height>
-       </rect>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border: none;
-background: #fff;
-border-radius: 10px;
-padding: 0 10px 0 10px</string>
-      </property>
-      <widget class="QLabel" name="label_bmi_index">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>117</y>
-         <width>351</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Roboto</family>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Your BMI Index: 29.4</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_15">
-       <property name="geometry">
-        <rect>
-         <x>130</x>
-         <y>15</y>
-         <width>91</width>
-         <height>71</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="pixmap">
-        <pixmap>icon/healthy.png</pixmap>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_status">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>92</y>
-         <width>351</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Roboto</family>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>You are: Normal</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </widget>
-    </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
       <string>Alarm</string>
@@ -765,19 +511,6 @@ padding: 10px</string>
         <width>48</width>
         <height>48</height>
        </size>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="stop_all">
-      <property name="geometry">
-       <rect>
-        <x>30</x>
-        <y>30</y>
-        <width>75</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Stop All</string>
       </property>
      </widget>
     </widget>
