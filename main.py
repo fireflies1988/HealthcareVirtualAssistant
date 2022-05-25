@@ -28,6 +28,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from firebase_database import *
 from app import Ui_MainWindow
 import pyrebase
+import logging
+logger = logging.getLogger('firebase')
 
 global command
 command = ""
@@ -166,6 +168,9 @@ class ThreadClass2(QThread):
         data = {"user": "temp", "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
                 "hr": avg_heart_rate, "spo2": raw_data[raw_data.__len__() - 1].spo2}
         db.child("MeasurementHistory").push(data)
+        # reload measurement history
+        MainWindow.get_measurement_history_data()
+
         if avg_heart_rate > 100 or raw_data[raw_data.__len__() - 1].spo2 <= 90:
             try:
                 sendemail(port, sender_email, receiver_email, password, message + data)
@@ -337,7 +342,8 @@ class MainWindow(QMainWindow):
         self.uic.btn_speak.clicked.connect(self.on_click_speak_button)
         self.uic.btnUpdate.clicked.connect(self.updatePatient)
         self.uic.btnSignout.clicked.connect(self.goto_signin)
-        self.uic.tabWidget.tabBarClicked.connect(self.get_measurement_history_data)
+        # self.uic.tabWidget.tabBarClicked.connect(self.get_measurement_history_data)
+        self.get_measurement_history_data()
 
         self.uic.lineEditPatientCode.setText("patientcode")
         self.uic.lineEditName.setText("name")
@@ -514,18 +520,26 @@ class MainWindow(QMainWindow):
         self.thread[3].error_signal.connect(self.errorWhileHearing)
         # threading.Thread(target=listen2(self)).start()
 
-    def get_measurement_history_data(self, index):
+    def get_measurement_history_data(self):
         # index == 3: tab_history
-        if index == 3:
-            self.uic.listWidget_history.clear()
+        # if index == 3:
+        self.uic.listWidget_history.clear()
+        try:
             temp = db.child("MeasurementHistory").get().val()
-            for x in temp:
-                date = temp[x]['date']
-                hr = temp[x]['hr']
-                spo2 = temp[x]['spo2']
+            # temp = firebase2.get('/MeasurementHistory', name=None, connection=None,
+            #                      params={"orderBy": '"hr"', "limitToLast": 10})
+            data = []
+            for d in temp:
+                data.append(d)
+            for d in data[::-1]:
+                date = temp[d]['date']
+                hr = temp[d]['hr']
+                spo2 = temp[d]['spo2']
                 item = QListWidgetItem()
                 self.uic.listWidget_history.addItem(item)
-                item.setText("HR: {} bpm, spo2: {}% | {}".format(hr, spo2, date))
+                item.setText("HR: {} bpm, SPO2: {}% | {}".format(hr, spo2, date))
+        except Exception as e:
+            logger.error(str(e))
 
     def finishHearing(self, voice_data_signal):
         self.uic.chat_user.setText(voice_data_signal)
@@ -639,6 +653,10 @@ class SignUpForm(QMainWindow):
 
 
 if __name__ == "__main__":
+    result = firebase2.get("/MeasurementHistory", '')
+    for x in result:
+        print(result[x]["date"])
+
     app = QApplication(sys.argv)
     # main_win = MainWindow()
     # main_win.show()
