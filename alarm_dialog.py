@@ -18,7 +18,10 @@ class Ui_Dialog(object):
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("icon/clock.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Dialog.setWindowIcon(icon)
-        Dialog.setStyleSheet("background: #F0F0F0")
+        Dialog.setStyleSheet("border:none;\n"
+"outline:none;\n"
+"background: #F0F0F0;\n"
+"border-radius:10px")
         self.label_3 = QtWidgets.QLabel(Dialog)
         self.label_3.setGeometry(QtCore.QRect(20, 130, 47, 13))
         font = QtGui.QFont()
@@ -68,7 +71,8 @@ class Ui_Dialog(object):
         self.btn_set_alarm.setObjectName("btn_set_alarm")
         self.alarm_time = QtWidgets.QTimeEdit(Dialog)
         self.alarm_time.setGeometry(QtCore.QRect(20, 90, 118, 22))
-        self.alarm_time.setStyleSheet("background:white")
+        self.alarm_time.setStyleSheet("background:white;\n"
+"border-radius:10px;")
         self.alarm_time.setObjectName("alarm_time")
         self.isOnce = QtWidgets.QCheckBox(Dialog)
         self.isOnce.setGeometry(QtCore.QRect(180, 91, 70, 17))

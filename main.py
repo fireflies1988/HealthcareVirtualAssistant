@@ -1,3 +1,4 @@
+import datetime
 import sys
 import time
 import uuid
@@ -12,6 +13,7 @@ from PyQt5.QtWidgets import *
 import ReadWrite
 import account
 import firebase_database
+import prompt_dialog
 import signin_form
 import signup_form
 from ReadWrite import Alarm
@@ -42,7 +44,7 @@ from sendmail import sendemail
 port = 465  # For SSL
 smtp_server = "smtp.gmail.com"
 sender_email = "n18dccn237java@gmail.com"  # Enter your address nqubjcnsenjyrppp
-receiver_email = "n18dccn146@gmail.com"  # Enter receiver addresspassword
+receiver_email = "luutienphat@gmail.com"  # Enter receiver addresspassword
 password = "dqocoxgxjylgooqg"
 # password = input("Type your password and press enter: ")
 message = """\
@@ -142,7 +144,7 @@ class ThreadClass2(QThread):
                     continue
 
                 if timeout is None:
-                    timeout = time.time() + 15
+                    timeout = time.time() + 5
 
                 if time.time() > timeout:
                     flag = False
@@ -171,7 +173,7 @@ class ThreadClass2(QThread):
         # reload measurement history
         MainWindow.get_measurement_history_data()
 
-        if avg_heart_rate > 100 or raw_data[raw_data.__len__() - 1].spo2 <= 90:
+        if int(avg_heart_rate) > 100 or int(raw_data[raw_data.__len__() - 1].spo2) <= 90:
             try:
                 sendemail(port, sender_email, receiver_email, password, message + data)
                 client = Client(account_sid, auth_token)
@@ -196,11 +198,20 @@ class AlarmItem(QWidget):
         self.parent = parent
         self.alarm = alarm
         self.row = QHBoxLayout()
+
+        self.column2 = QVBoxLayout()
+        self.column2.setAlignment(Qt.AlignHCenter)
         clock = QLabel("clock")
         # clock.setGeometry(QtCore.QRect(10, 9, 31, 31))
         clock.setText("")
         clock.setPixmap(QtGui.QPixmap("icon/clock.png"))
         clock.setAlignment(QtCore.Qt.AlignCenter)
+        self.column2.addWidget(clock)
+
+        if alarm.is_once:
+            self.column2.addWidget(QLabel("Once"))
+        else:
+            self.column2.addWidget(QLabel("Everyday"))
 
         pushButton = QtWidgets.QPushButton()
         # pushButton.setGeometry(QtCore.QRect(240, 12, 31, 23))
@@ -208,8 +219,8 @@ class AlarmItem(QWidget):
         icon2.addPixmap(QtGui.QPixmap("icon/close.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         pushButton.setIcon(icon2)
         pushButton.clicked.connect(self.onClick)
+        self.row.addItem(self.column2)
 
-        self.row.addWidget(clock)
         self.column = QVBoxLayout()
         self.column.addWidget(QLabel(self.alarm.__get_time__()))
         self.column.addWidget(QLabel(self.alarm.message))
@@ -265,6 +276,7 @@ class ThreadClass3(QThread):
         self.terminate()
 
 
+# speak
 class ThreadClass4(QThread):
     # voice_data_signal = pyqtSignal(str)
     # error_signal = pyqtSignal(str)
@@ -299,6 +311,40 @@ class ThreadClass4(QThread):
         self.terminate()
 
 
+class ThreadClass5(QThread):
+    open_prompt_signal = pyqtSignal(object)
+    delete_alarm_signal = pyqtSignal(object)
+
+    def __init__(self, index=0, alarm=None):
+        super().__init__()
+        self.index = index
+        self.alarm = alarm
+
+    def run(self):
+        while True:
+            time.sleep(1)
+            current_time = datetime.now()
+            now = current_time.strftime("%H:%M")
+            date = current_time.strftime("%d/%m/%Y")
+            # print("index: ", self.index)
+            # print("The Set Date is:", date)
+            # print("Thời gian hiện tại", now)
+            alarm_time = datetime.strptime(self.alarm.__get_time__(), '%H:%M')
+            alarm_time_str = alarm_time.strftime("%H:%M")
+            # print("Thời gian báo thưc", alarm_time_str)
+            if now == alarm_time_str:
+                # print("Tin nhắn", self.alarm.message)
+                self.open_prompt_signal.emit(self.alarm)
+                # playsound.playsound("sound")
+                if self.alarm.is_once:
+                    self.delete_alarm_signal.emit(self.alarm)
+                    break
+
+    def stop(self):
+        print('Stopping thread', self.index)
+        self.terminate()
+
+
 class AlarmDialog(QDialog):
     def __init__(self, parent=None):
         super(AlarmDialog, self).__init__(parent)
@@ -329,6 +375,24 @@ class AlarmDialog(QDialog):
         print()
 
 
+class PromptDialog(QDialog):
+    def __init__(self, parent=None, alarm=None):
+        super(PromptDialog, self).__init__(parent)
+        self.main_win = QDialog()
+        self.parent = parent
+        self.alarm = alarm
+        self.uic = prompt_dialog.Ui_Dialog()
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.uic.setupUi(self)
+        self.uic.btn_ok.clicked.connect(self.on_click_btn_ok)
+        self.uic.time_label.setText(self.alarm.__get_time__())
+        self.uic.message_label.setText(self.alarm.message)
+        playsound.playsound(sound='sound/good-morning.mp3', block=False)
+
+    def on_click_btn_ok(self):
+        self.main_win.close()
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -336,6 +400,7 @@ class MainWindow(QMainWindow):
         self.main_win = QMainWindow()
         self.uic = Ui_MainWindow()
         self.thread = {}
+        self.alarm_thread = {}
         self.uic.setupUi(self.main_win)
         self.is_btn_speak_clicked = False
         self.is_speaking = False
@@ -379,17 +444,47 @@ class MainWindow(QMainWindow):
                                           "QListWidget::item:selected {"
                                           "background-color: #DDD;"
                                           "}")
+        self.uic.stop_all.clicked.connect(self.cancel_all_alarm)
+        self.uic.stop_all.hide()
+
+        self.uic.btn_submit.clicked.connect(self.on_btn_summit_click)
+
+    def cancel_all_alarm(self):
+        for i in self.alarm_thread:
+            self.alarm_thread[i].stop()
+        self.alarm_thread.clear()
 
     def fill_alarm_list(self):
+        self.cancel_all_alarm()
         self.uic.alarm_list.clear()
         alarm_list = ReadWrite.readFile()
+        i = 0
         for alarm in alarm_list:
             item = QListWidgetItem(self.uic.alarm_list)
             self.uic.alarm_list.addItem(item)
             row = AlarmItem(parent=self, alarm=alarm)
             item.setSizeHint(row.minimumSizeHint())
             self.uic.alarm_list.setItemWidget(item, row)
-        threading.Thread(target=self.introduce2, daemon=True).start()
+            self.alarm_thread[i] = ThreadClass5(index=i, alarm=alarm)
+            self.alarm_thread[i].start()
+            self.alarm_thread[i].open_prompt_signal.connect(self.open_prompt)
+            self.alarm_thread[i].delete_alarm_signal.connect(self.delete_alarm)
+            i += 1
+
+    def open_prompt(self, open_prompt_signal):
+        promptDialog = PromptDialog(alarm=open_prompt_signal)
+        promptDialog.exec_()
+
+    def delete_alarm(self, delete_alarm_signal):
+        alarm_list = ReadWrite.readFile()
+        al = None
+        for a in alarm_list:
+            if a.uuid == delete_alarm_signal.uuid:
+                al = a
+                break
+        alarm_list.remove(al)
+        ReadWrite.writeFile(alarm_list)
+        self.fill_alarm_list()
 
     def goto_signin(self):
         signInForm = SignInForm()
@@ -405,10 +500,35 @@ class MainWindow(QMainWindow):
         self.is_speaking = not self.is_speaking
         self.thread[4] = ThreadClass4(index=1, text=text)
         self.thread[4].start()
-        # self.thread[4].error_signal.connect(self.errorWhileMeasuring)
-        # self.thread[4].measuring_signal.connect(self.measuring)
-        # self.thread[4].heart_rate_signal.connect(self.showHeartRate)
-        # self.thread[4].spo2_signal.connect(self.showSpo2)
+
+    def on_btn_summit_click(self):
+        height = int(self.uic.edit_height.text())
+        weight = int(self.uic.edit_height.text())
+        self.bmi2(height=height, weight=weight)
+
+    def bmi2(self, height, weight):
+        result = weight / (height * height)
+        status = ""
+        if result < 16:
+            status = 'Severe thinness'
+        elif result >= 16 & result < 17:
+            status = 'moderate thinness '
+        elif result >= 17 & result < 18.5:
+            status = 'thin'
+        elif result >= 18.5 & result < 25:
+            status = 'normal'
+        elif result >= 25 & result < 30:
+            status = 'overweight'
+        elif result >= 30 & result < 35:
+            status = 'Obese type 1'
+        elif result >= 35 & result < 40:
+            status = 'Obese type 2'
+        else:
+            status = 'Obese type 3'
+
+        self.uic.label_status.setText("You are: " + status)
+        self.uic.label_bmi_index.setText("Your BMI Index: " + str(result))
+        self.speak("You are in " + status + " status")
 
     def measureHeartRate(self):
         self.uic.chat_user_widget.hide()
@@ -554,6 +674,7 @@ class MainWindow(QMainWindow):
         self.changBtnSpeakIcon(icon_type=True)
 
     def on_click_send(self):
+        self.uic.tabWidget.setCurrentWidget(self.uic.tab)
         text = ""
         self.speechRunnable = SpeechRunnable()
         if self.uic.ask_entry.text() != "":
@@ -598,20 +719,18 @@ class SignInForm(QMainWindow):
             mainWindow.show()
             self.main_win.close()
 
-
-
-
         except Exception as e:
             self.uic.invalid.setVisible(True)
 
     def goto_create(self):
-        signUpForm = SignUpForm()
-        signUpForm.show()
+        self.showSignUpForm()
+
+    def showSignUpForm(self):
         self.main_win.close()
-        # widget.addWidget(createAcc)
-        # widget.setCurrentIndex(widget.currentIndex() + 1)
-
-
+        self.sub_win = QMainWindow()
+        self.uic1 = signup_form.Ui_MainWindow()
+        self.uic1.setupUi(self.sub_win)
+        self.sub_win.show()
 
     def show(self):
         self.main_win.show()
@@ -630,9 +749,10 @@ class SignUpForm(QMainWindow):
         self.uic.invalid.setVisible(False)
 
     def goto_signin(self):
-        signInForm = SignInForm()
-        signInForm.show()
-        self.main_win.close()
+        # signInForm = SignInForm()
+        # signInForm.show()
+        # self.main_win.close()
+        self.showSignInForm()
 
     def create_acc_function(self):
         email = self.uic.email.text()
@@ -640,23 +760,24 @@ class SignUpForm(QMainWindow):
             user_password = self.uic.password.text()
             try:
                 account.auth.create_user_with_email_and_password(email, user_password)
-                login = Login()
-                login.exec_()
-                self.main_win.close()
+                self.showSignInForm()
                 # widget.addWidget(login)
                 # widget.setCurrentIndex(widget.currentIndex() + 1)
             except:
                 self.uic.invalid.setVisible(True)
 
+    def showSignInForm(self):
+        self.main_win.close()
+        self.sub_win = QMainWindow()
+        self.uic1 = signin_form.Ui_MainWindow()
+        self.uic1.setupUi(self.sub_win)
+        self.sub_win.show()
+
     def show(self):
         self.main_win.show()
 
 
-if __name__ == "__main__":
-    result = firebase2.get("/MeasurementHistory", '')
-    for x in result:
-        print(result[x]["date"])
-
+def main():
     app = QApplication(sys.argv)
     # main_win = MainWindow()
     # main_win.show()
@@ -665,6 +786,10 @@ if __name__ == "__main__":
     # main_win = MainWindow()
     # main_win.show()
     sys.exit(app.exec())
+
+
+if __name__ == "__main__":
+    main()
 
 # if __name__ == "__main__":
 #     window.after(500, introduce)  # after mainloop() 500ms, call introduce()
