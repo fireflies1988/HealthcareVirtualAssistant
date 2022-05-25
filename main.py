@@ -32,6 +32,7 @@ from firebase_database import *
 from app import Ui_MainWindow
 import pyrebase
 import logging
+
 logger = logging.getLogger('firebase')
 
 global command
@@ -61,6 +62,7 @@ from twilio.rest import Client
 # auth_token = os.environ['TWILIO_AUTH_TOKEN']
 account_sid = 'AC98b3f8f8743972146b1f706fcdd4cf63'
 auth_token = '14f22c92a29e83fe060322687cb98d4f'
+
 
 class SpeechRunnable(QRunnable):
     def __init__(self):
@@ -745,7 +747,9 @@ class SignInForm(QMainWindow):
 
     def goto_create(self):
         print("tsign up")
-        self.showSignUpForm()
+        signUpForm = SignInForm()
+        signUpForm.show()
+        # self.showSignUpForm()
 
     def showSignUpForm(self):
         self.sub_win = QMainWindow()
