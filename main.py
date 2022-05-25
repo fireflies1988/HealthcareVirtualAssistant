@@ -59,6 +59,8 @@ from twilio.rest import Client
 account_sid = 'AC98b3f8f8743972146b1f706fcdd4cf63'
 auth_token = '14f22c92a29e83fe060322687cb98d4f'
 
+global globalUid
+globalUid = ""
 
 class SpeechRunnable(QRunnable):
     def __init__(self):
@@ -404,8 +406,11 @@ class MainWindow(QMainWindow):
         self.uic.btnSignout.clicked.connect(self.goto_signin)
         self.uic.tabWidget.tabBarClicked.connect(self.get_measurement_history_data)
 
+        try:
+            self.uic.lineEditPatientCode.setText(globalUid)
+        except Exception as e:
+            self.uic.lineEditPatientCode.setText("lỗi")
 
-        self.uic.lineEditPatientCode.setText(account.uid)
         self.uic.lineEditName.setText("name")
         self.uic.radioButtonMale.setChecked(True)
 
@@ -706,6 +711,7 @@ class SignInForm(QMainWindow):
             mainWindow.show()
             self.main_win.close()
 
+            globalUid = ref['localId']
 
 
 

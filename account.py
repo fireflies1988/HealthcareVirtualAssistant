@@ -35,13 +35,12 @@ class Login(QDialog):
         self.uic.invalid.setVisible(False)
         # dialog = MainWindow()
 
-    def login_function(self):
+    def login_function(self, ):
         email = self.uic.email.text()
         password = self.uic.password.text()
+
         try:
             ref = auth.sign_in_with_email_and_password(email, password)
-            global uid
-            uid = ref['localId']
             # mainwindow = MainWindow()
             # widget.addWidget(MainWindow())
             # widget.setCurrentIndex(widget.currentIndex() + 1)
