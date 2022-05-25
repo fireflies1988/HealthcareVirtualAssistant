@@ -1,4 +1,5 @@
 import pyrebase
+from firebase import firebase as fb
 
 firebaseConfig = {
   "apiKey": "AIzaSyB9O5m92e395fNLlFzqUF7xTmNBtUcxb4c",
@@ -13,4 +14,7 @@ firebaseConfig = {
 
 firebase = pyrebase.initialize_app(firebaseConfig)
 db = firebase.database()
+
+firebase2 = fb.FirebaseApplication("https://nhung-c3e4e-default-rtdb.firebaseio.com/", None)
+
 
