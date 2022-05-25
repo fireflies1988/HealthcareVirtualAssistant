@@ -258,7 +258,7 @@ border: 1px solid rgb(243,243,243);</string>
     </property>
     <property name="icon">
      <iconset>
-      <normaloff>../../Users/PC/Downloads/previous (1).png</normaloff>../../Users/PC/Downloads/previous (1).png</iconset>
+      <normaloff>icon/previous (1).png</normaloff>icon/previous (1).png</iconset>
     </property>
     <property name="iconSize">
      <size>

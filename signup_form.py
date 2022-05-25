@@ -121,7 +121,7 @@ class Ui_MainWindow(object):
         self.btnback.setStyleSheet("background: transparent;")
         self.btnback.setText("")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("../../Users/PC/Downloads/previous (1).png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap("icon/previous (1).png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnback.setIcon(icon1)
         self.btnback.setIconSize(QtCore.QSize(32, 32))
         self.btnback.setObjectName("btnback")
