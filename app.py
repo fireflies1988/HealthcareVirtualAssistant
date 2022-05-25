@@ -452,7 +452,7 @@ class Ui_MainWindow(object):
         self.actionBack.setObjectName("actionBack")
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -493,7 +493,6 @@ class Ui_MainWindow(object):
         self.label_10.setText(_translate("MainWindow", "Sex:"))
         self.radioButtonMale.setText(_translate("MainWindow", "Male"))
         self.radioButtonFemale.setText(_translate("MainWindow", "Female"))
-        self.btnUpdate.setText(_translate("MainWindow", "Update"))
         self.btnUpdate.setText(_translate("MainWindow", "Update"))
         self.btnSignout.setText(_translate("MainWindow", "Sign out"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Information"))
