@@ -26,7 +26,7 @@ from firebase_database import *
 import pyrebase
 global command
 command = ""
-
+import account
 from sendmail import sendemail
 
 port = 465  # For SSL
@@ -283,7 +283,8 @@ class MainWindow(QMainWindow):
         self.uic.btnUpdate.clicked.connect(self.updatePatient)
         self.uic.tabWidget.tabBarClicked.connect(self.get_measurement_history_data)
 
-        self.uic.lineEditPatientCode.setText("patientcode")
+
+        self.uic.lineEditPatientCode.setText(account.uid)
         self.uic.lineEditName.setText("name")
         self.uic.radioButtonMale.setChecked(True)
 

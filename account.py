@@ -35,7 +35,8 @@ class Login(QDialog):
         password = self.password.text()
         try:
             ref = auth.sign_in_with_email_and_password(email, password)
-            print(ref['localId'])
+            global uid
+            uid = ref['localId']
             # mainwindow = MainWindow()
             # widget.addWidget(MainWindow())
             # widget.setCurrentIndex(widget.currentIndex() + 1)
