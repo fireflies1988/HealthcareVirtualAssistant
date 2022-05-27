@@ -3,7 +3,7 @@ import threading
 from pprint import pprint
 from tkinter import *
 
-from main import SpeechRunnable
+# from main import SpeechRunnable
 from virtual_assistant import speak
 
 import geocoder
@@ -86,6 +86,10 @@ def respond2(self, voice_data):
     voice_data = voice_data.lower()
     print(voice_data)
 
+    if self.isAskingDiag:
+        self.return_diag(diag=voice_data)
+        return
+
     if "hello" in voice_data or "hi" in voice_data:
         result = "Ít's nice to see you"
         change_bot_chat(self, result)
@@ -164,11 +168,11 @@ def respond2(self, voice_data):
         time = record_audio2("what is the time")
 
     elif "diagnostic" in voice_data:
-        diag = record_audio2("Please tell me your symptom")
-        print(diag)
-        diagnos = trackSicks(diag)
-        change_bot_chat(self, diagnos)
-
+        # diag = record_audio2("Please tell me your symptom")
+        # print(diag)
+        # diagnos = trackSicks(diag)
+        # change_bot_chat(self, diagnos)
+        self.ask_diag()
 
     else:
         result = "Sorry, I'm not able to help with this one."

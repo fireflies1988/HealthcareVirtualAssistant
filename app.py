@@ -452,7 +452,7 @@ class Ui_MainWindow(object):
         self.actionBack.setObjectName("actionBack")
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(1)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -484,14 +484,12 @@ class Ui_MainWindow(object):
         self.label_51.setText(_translate("MainWindow", "Patient Information"))
         self.label_6.setText(_translate("MainWindow", "Patient Code:"))
         self.lineEditPatientCode.setPlaceholderText(_translate("MainWindow", "Patient code..."))
-        self.lineEditPatientCode.setEnabled(False)
         self.lineEditName.setPlaceholderText(_translate("MainWindow", "..."))
         self.label_71.setText(_translate("MainWindow", "Name:"))
         self.lineEditPhone.setPlaceholderText(_translate("MainWindow", "..."))
         self.label_8.setText(_translate("MainWindow", "Phone:"))
         self.label_9.setText(_translate("MainWindow", "Disease Infor:"))
         self.textEditDisease.setPlaceholderText(_translate("MainWindow", "..."))
-        self.textEditDisease.setEnabled(False)
         self.label_10.setText(_translate("MainWindow", "Sex:"))
         self.radioButtonMale.setText(_translate("MainWindow", "Male"))
         self.radioButtonFemale.setText(_translate("MainWindow", "Female"))

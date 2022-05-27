@@ -6,12 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>636</height>
+    <width>390</width>
+    <height>640</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Sign In</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>icon/log-in.png</normaloff>icon/log-in.png</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">background : #363636;
@@ -20,7 +24,7 @@
   <widget class="QLabel" name="label_18">
    <property name="geometry">
     <rect>
-     <x>48</x>
+     <x>37</x>
      <y>179</y>
      <width>71</width>
      <height>21</height>
@@ -42,7 +46,7 @@
   <widget class="QLabel" name="label_19">
    <property name="geometry">
     <rect>
-     <x>48</x>
+     <x>37</x>
      <y>250</y>
      <width>111</width>
      <height>21</height>
@@ -64,7 +68,7 @@
   <widget class="QLabel" name="invalid">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>-1</x>
      <y>313</y>
      <width>391</width>
      <height>31</height>
@@ -89,7 +93,7 @@
   <widget class="QLabel" name="label_20">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>-1</x>
      <y>60</y>
      <width>390</width>
      <height>71</height>
@@ -120,7 +124,7 @@
   <widget class="QLineEdit" name="email">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>159</x>
      <y>170</y>
      <width>200</width>
      <height>40</height>
@@ -141,7 +145,7 @@ border: 1px solid rgb(243,243,243);</string>
   <widget class="QLineEdit" name="password">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>159</x>
      <y>240</y>
      <width>200</width>
      <height>40</height>
@@ -172,7 +176,7 @@ border: 1px solid rgb(243,243,243)</string>
   <widget class="QLabel" name="label_21">
    <property name="geometry">
     <rect>
-     <x>90</x>
+     <x>79</x>
      <y>459</y>
      <width>141</width>
      <height>16</height>
@@ -194,7 +198,7 @@ border: 1px solid rgb(243,243,243)</string>
   <widget class="QPushButton" name="loginbutton">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>129</x>
      <y>373</y>
      <width>131</width>
      <height>41</height>
@@ -219,7 +223,7 @@ border: none;</string>
   <widget class="QPushButton" name="createaccbutton">
    <property name="geometry">
     <rect>
-     <x>230</x>
+     <x>219</x>
      <y>453</y>
      <width>93</width>
      <height>28</height>
