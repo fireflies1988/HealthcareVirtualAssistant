@@ -15,7 +15,9 @@ import ReadWriteKey
 import account
 import firebase_database
 import prompt_dialog
+import signin_dialog
 import signin_form
+import signup_dialog
 import signup_form
 from ReadWrite import Alarm
 from SensorData import SensorData
@@ -32,6 +34,7 @@ from firebase_database import *
 from app import Ui_MainWindow
 import pyrebase
 import logging
+
 logger = logging.getLogger('firebase')
 
 global command
@@ -45,7 +48,7 @@ from sendmail import sendemail
 port = 465  # For SSL
 smtp_server = "smtp.gmail.com"
 sender_email = "n18dccn237java@gmail.com"  # Enter your address nqubjcnsenjyrppp
-receiver_email = "luutienphat@gmail.com"  # Enter receiver addresspassword
+receiver_email = "thienthien20221@gmail.com"  # Enter receiver addresspassword
 password = "dqocoxgxjylgooqg"
 # password = input("Type your password and press enter: ")
 message = """\
@@ -61,6 +64,7 @@ from twilio.rest import Client
 # auth_token = os.environ['TWILIO_AUTH_TOKEN']
 account_sid = 'AC98b3f8f8743972146b1f706fcdd4cf63'
 auth_token = '14f22c92a29e83fe060322687cb98d4f'
+
 
 class SpeechRunnable(QRunnable):
     def __init__(self):
@@ -175,12 +179,12 @@ class ThreadClass2(QThread):
 
         if int(avg_heart_rate) > 100 or int(raw_data[raw_data.__len__() - 1].spo2) <= 90:
             try:
-                sendemail(port, sender_email, receiver_email, password, message + data)
+                sendemail(port, sender_email, receiver_email, password, message + str(data))
                 client = Client(account_sid, auth_token)
                 message1 = client.messages.create(
-                    body=message + data,
+                    body=message + str(data),
                     from_='+18507905695',
-                    to='+84386201456'
+                    to='+84967903498'
                 )
                 print(message1.body)
             except Exception:
@@ -345,6 +349,51 @@ class ThreadClass5(QThread):
         self.terminate()
 
 
+class ThreadClass6(QThread):
+    signal_1 = pyqtSignal(object)
+    signal_2 = pyqtSignal(object)
+
+    def __init__(self, index=0):
+        super().__init__()
+        self.index = index
+
+    def run(self):
+        self.signal_1.emit("Please tell me your symptom")
+        # diag = record_audio2("Please tell me your symptom")
+        # print(diag)
+        # self.signal_2.emit(diag)
+        # diagnos = trackSicks(diag)
+        # self.signal_1.emit(str(diagnos))
+        # change_bot_chat(self, diagnos)
+
+    def stop(self):
+        print('Stopping thread', self.index)
+        self.terminate()
+
+
+class ThreadClass7(QThread):
+    signal_1 = pyqtSignal(object)
+    signal_2 = pyqtSignal(object)
+
+    def __init__(self, index=0, diag=""):
+        super().__init__()
+        self.index = index
+        self.diag = diag
+
+    def run(self):
+        # self.signal_1.emit("Please tell me your symptom")
+        # diag = record_audio2("Please tell me your symptom")
+        # print(diag)
+        # self.signal_2.emit(diag)
+        diagnos = trackSicks(self.diag)
+        self.signal_1.emit(str(diagnos))
+        # change_bot_chat(self, diagnos)
+
+    def stop(self):
+        print('Stopping thread', self.index)
+        self.terminate()
+
+
 class AlarmDialog(QDialog):
     def __init__(self, parent=None):
         super(AlarmDialog, self).__init__(parent)
@@ -437,6 +486,7 @@ class MainWindow(QMainWindow):
             self.uic.radioButtonMale.setChecked(True)
             self.uic.lineEditPhone.setText("")
             self.uic.textEditDisease.setText("")
+
         self.uic.btn_active.hide()
         self.uic.screen.hide()
         self.uic.btn_send.clicked.connect(self.on_click_send)
@@ -468,6 +518,28 @@ class MainWindow(QMainWindow):
         self.uic.stop_all.hide()
 
         self.uic.btn_submit.clicked.connect(self.on_btn_summit_click)
+
+        self.isAskingDiag = False
+
+    def ask_diag(self):
+        self.isAskingDiag = True
+        self.alarm_thread[6] = ThreadClass6(index=1)
+        self.alarm_thread[6].start()
+        self.alarm_thread[6].signal_1.connect(self.updateBot)
+        self.alarm_thread[6].signal_2.connect(self.updateUser)
+
+    def return_diag(self, diag=""):
+        self.isAskingDiag = False
+        self.alarm_thread[7] = ThreadClass7(index=1, diag=diag)
+        self.alarm_thread[7].start()
+        self.alarm_thread[7].signal_1.connect(self.updateBot)
+        self.alarm_thread[7].signal_2.connect(self.updateUser)
+
+    def updateBot(self, signal_1):
+        self.uic.chat_bot.setText(signal_1)
+
+    def updateUser(self, signal_2):
+        self.uic.chat_bot.setText(signal_2)
 
     def cancel_all_alarm(self):
         for i in self.alarm_thread:
@@ -509,10 +581,8 @@ class MainWindow(QMainWindow):
     def goto_signin(self):
         ReadWriteKey.writeFile("")
         self.main_win.close()
-        self.sub_win = QMainWindow()
-        self.uic1 = signin_form.Ui_MainWindow()
-        self.uic1.setupUi(self.sub_win)
-        self.sub_win.show()
+        signInDialog = SignInDialog()
+        signInDialog.exec_()
 
     def speak(self, text):
         if self.is_speaking:
@@ -527,7 +597,7 @@ class MainWindow(QMainWindow):
     def on_btn_summit_click(self):
         try:
             height = float(self.uic.edit_height.text())
-            weight = int(self.uic.edit_weight.text())
+            weight = float(self.uic.edit_weight.text())
             self.bmi2(height=height, weight=weight)
         except Exception as e:
             logger.error(str(e))
@@ -537,17 +607,17 @@ class MainWindow(QMainWindow):
         status = ""
         if result < 16.0:
             status = 'Severe thinness'
-        elif result >= 16.0 & result < 17.0:
+        elif 16.0 <= result < 17.0:
             status = 'moderate thinness '
-        elif result >= 17.0 & result < 18.5:
+        elif 17.0 <= result < 18.5:
             status = 'thin'
-        elif result >= 18.5 & result < 25.0:
+        elif 18.5 <= result < 25.0:
             status = 'normal'
-        elif result >= 25.0 & result < 30.0:
+        elif 25.0 <= result < 30.0:
             status = 'overweight'
-        elif result >= 30.0 & result < 35.0:
+        elif 30.0 <= result < 35.0:
             status = 'Obese type 1'
-        elif result >= 35.0 & result < 40.0:
+        elif 35.0 <= result < 40.0:
             status = 'Obese type 2'
         else:
             status = 'Obese type 3'
@@ -558,7 +628,7 @@ class MainWindow(QMainWindow):
         # save data to firebase database
         print(accessKey)
         data = {"user": accessKey, "date": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-                "bmi": str(result), "status": status}
+                "bmi": str(round(result, 1)), "status": status}
         db.child("MeasurementHistory").push(data)
         # reload measurement history
         mainWindow.get_measurement_history_data()
@@ -771,12 +841,14 @@ class SignInForm(QMainWindow):
 
     def goto_create(self):
         print("tsign up")
+        # signUpForm = SignInForm()
+        # signUpForm.show()
         self.showSignUpForm()
 
     def showSignUpForm(self):
         self.sub_win = QMainWindow()
         self.uic1 = signup_form.Ui_MainWindow()
-        self.uic1.setupUi(self)
+        self.uic1.setupUi(self.sub_win)
         self.sub_win.show()
 
     def show(self):
@@ -822,6 +894,87 @@ class SignUpForm(QMainWindow):
         self.main_win.show()
 
 
+class SignUpDialog(QDialog):
+    def __init__(self, parent=None):
+        super(SignUpDialog, self).__init__(parent)
+        self.parent = parent
+        self.main_win = QDialog()
+        self.uic = signup_dialog.Ui_Dialog()
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.uic.setupUi(self)
+        self.uic.signupbutton.clicked.connect(self.create_acc_function)
+        self.uic.password.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.uic.confirmpass.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.uic.btnback.clicked.connect(self.goto_signin)
+        self.uic.invalid.setVisible(False)
+
+    def goto_signin(self):
+        print("sign in")
+        self.showSignInForm()
+
+    def create_acc_function(self):
+        email = self.uic.email.text()
+        if self.uic.password.text() == self.uic.confirmpass.text():
+            user_password = self.uic.password.text()
+            try:
+                account.auth.create_user_with_email_and_password(email, user_password)
+                self.showSignInForm()
+                # widget.addWidget(login)
+                # widget.setCurrentIndex(widget.currentIndex() + 1)
+            except:
+                self.uic.invalid.setVisible(True)
+
+    def showSignInForm(self):
+        self.close()
+        signInDialog = SignInDialog()
+        signInDialog.exec_()
+
+    def show(self):
+        self.main_win.show()
+
+
+class SignInDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__()
+        super(SignInDialog, self).__init__(parent)
+        self.parent = parent
+        self.main_win = QDialog()
+        self.uic = signin_dialog.Ui_Dialog()
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.uic.setupUi(self)
+        self.uic.password.setEchoMode(QtWidgets.QLineEdit.Password)
+        self.uic.loginbutton.clicked.connect(self.login_function)
+        self.uic.createaccbutton.clicked.connect(self.goto_create)
+        self.uic.invalid.setVisible(False)
+
+    def login_function(self):
+        global email
+        global user_password
+        global mainWindow
+        global ref
+        email = self.uic.email.text()
+        user_password = self.uic.password.text()
+        try:
+            ref = account.auth.sign_in_with_email_and_password(email, user_password)
+            print(ref['localId'])
+            mainWindow = MainWindow()
+            mainWindow.show()
+            ReadWriteKey.writeFile(key=ref['localId'])
+            self.close()
+
+        except Exception as e:
+            self.uic.invalid.setVisible(True)
+
+    def goto_create(self):
+        print("tsign up")
+        self.showSignUpForm()
+
+    def showSignUpForm(self):
+        self.close()
+        signUpDialog = SignUpDialog()
+        signUpDialog.exec_()
+
+
 def main():
     app = QApplication(sys.argv)
     global access
@@ -833,11 +986,14 @@ def main():
     if access:
         main_win = MainWindow()
         mainWindow = main_win
+        main_win.show()
     else:
-        main_win = SignInForm()
+        signInDialog = SignInDialog()
+        signInDialog.exec_()
+        # main_win = SignInForm()
     # main_win = MainWindow()
     # main_win.show()
-    main_win.show()
+    # main_win.show()
     sys.exit(app.exec())
     # app = QApplication([SignInForm, SignUpForm, MainWindow])
     # gui = SignInForm()
